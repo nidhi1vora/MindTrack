@@ -1,0 +1,40 @@
+{
+  "mood_entries": [
+    {
+      "id": 1,
+      "date": "2025-07-19",
+      "mood_score": 8,
+      "notes": "normal",
+      "timestamp": "2025-07-19T05:43:41.877202"
+    }
+  ],
+  "sleep_entries": [
+    {
+      "id": 1,
+      "date": "2025-07-19",
+      "duration": 7.5,
+      "quality": 8,
+      "bedtime": "22:10",
+      "wake_time": "06:00",
+      "notes": "good",
+      "timestamp": "2025-07-19T05:45:11.114080"
+    }
+  ],
+  "habits": [
+    {
+      "id": 1,
+      "name": "morning cricket ",
+      "description": "its my career",
+      "created_date": "2025-07-19"
+    }
+  ],
+  "habit_entries": [],
+  "journal_entries": [],
+  "journal_password_hash": null,
+  "settings": {
+    "created_date": "2025-07-19T05:43:41.877076",
+    "notification_frequency": "daily",
+    "notifications_enabled": false,
+    "last_notification": null
+  }
+}

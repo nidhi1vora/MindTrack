@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import logging
 
@@ -244,6 +244,101 @@ class DataManager:
             timestamp = datetime.now().isoformat()
         self.data['settings']['last_notification'] = timestamp
         return self.save_data()
+    
+    def get_garden_data(self):
+        """Get garden data, ensuring structure exists"""
+        if 'garden_data' not in self.data:
+            self.data['garden_data'] = {
+                'plants': [],
+                'creation_date': datetime.now().isoformat(),
+                'last_plant_date': None
+            }
+            self.save_data()
+        return self.data['garden_data']
+    
+    def get_garden_stats(self):
+        """Calculate garden statistics"""
+        garden_data = self.get_garden_data()
+        plants = garden_data.get('plants', [])
+        
+        # Calculate current streak
+        current_streak = 0
+        best_streak = 0
+        temp_streak = 0
+        
+        if plants:
+            # Sort plants by date
+            sorted_plants = sorted(plants, key=lambda x: x['date'])
+            
+            # Calculate streaks
+            last_date = None
+            for plant in sorted_plants:
+                plant_date = datetime.fromisoformat(plant['date']).date()
+                
+                if last_date is None:
+                    temp_streak = 1
+                elif (plant_date - last_date).days == 1:
+                    temp_streak += 1
+                else:
+                    temp_streak = 1
+                
+                best_streak = max(best_streak, temp_streak)
+                last_date = plant_date
+            
+            # Check if current streak is still active
+            today = date.today()
+            if last_date == today:
+                current_streak = temp_streak
+            elif last_date == today - timedelta(days=1):
+                current_streak = temp_streak
+            else:
+                current_streak = 0
+        
+        return {
+            'total_plants': len(plants),
+            'current_streak': current_streak,
+            'best_streak': best_streak,
+            'garden_age_days': (date.today() - datetime.fromisoformat(garden_data.get('creation_date', datetime.now().isoformat())).date()).days
+        }
+    
+    def add_garden_plant(self, mood, plant_type, log_date):
+        """Add a new plant to the garden"""
+        try:
+            garden_data = self.get_garden_data()
+            
+            # Check if already logged today
+            if any(plant['date'] == log_date for plant in garden_data['plants']):
+                return False
+            
+            # Create new plant entry
+            new_plant = {
+                'id': len(garden_data['plants']) + 1,
+                'date': log_date,
+                'mood': mood,
+                'type': plant_type,
+                'timestamp': datetime.now().isoformat(),
+                'isNew': True
+            }
+            
+            garden_data['plants'].append(new_plant)
+            garden_data['last_plant_date'] = log_date
+            
+            # Also add to mood entries for compatibility
+            mood_score_map = {
+                'amazing': 9,
+                'good': 7,
+                'okay': 5,
+                'down': 3,
+                'anxious': 4
+            }
+            
+            self.add_mood_entry(mood_score_map.get(mood, 5), f"Garden mood: {mood}")
+            
+            return self.save_data()
+            
+        except Exception as e:
+            logging.error(f"Error adding garden plant: {e}")
+            return False
 
 # Global data manager instance
 data_manager = DataManager()

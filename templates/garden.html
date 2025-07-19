@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+
+{% block title %}My Garden - MindTrack{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Garden Header -->
+        <div class="col-12 mb-4">
+            <div class="card garden-header">
+                <div class="card-body text-center">
+                    <h1 class="card-title mb-3">
+                        <i data-feather="flower" class="me-2"></i>
+                        My Wellness Garden
+                    </h1>
+                    <p class="card-text lead">Each mood entry grows a new plant in your garden</p>
+                    
+                    <div class="garden-stats d-flex justify-content-center gap-4 mt-3">
+                        <div class="stat-item">
+                            <i data-feather="calendar" class="text-success"></i>
+                            <span class="ms-2">Day <span id="current-streak">{{ garden_stats.current_streak }}</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <i data-feather="trending-up" class="text-primary"></i>
+                            <span class="ms-2"><span id="total-plants">{{ garden_stats.total_plants }}</span> Plants</span>
+                        </div>
+                        <div class="stat-item">
+                            <i data-feather="award" class="text-warning"></i>
+                            <span class="ms-2"><span id="best-streak">{{ garden_stats.best_streak }}</span> Day Best</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mood Logging Section -->
+        <div class="col-12 mb-4">
+            <div class="card mood-logger">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i data-feather="heart" class="me-2"></i>
+                        How are you feeling today?
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if can_log_today %}
+                        <div class="mood-options">
+                            <button class="mood-btn" data-mood="amazing" data-plant="flower">
+                                <span class="mood-emoji">😊</span>
+                                <span class="mood-label">Amazing</span>
+                            </button>
+                            <button class="mood-btn" data-mood="good" data-plant="tree">
+                                <span class="mood-emoji">🙂</span>
+                                <span class="mood-label">Good</span>
+                            </button>
+                            <button class="mood-btn" data-mood="okay" data-plant="cactus">
+                                <span class="mood-emoji">😐</span>
+                                <span class="mood-label">Okay</span>
+                            </button>
+                            <button class="mood-btn" data-mood="down" data-plant="sprout">
+                                <span class="mood-emoji">😔</span>
+                                <span class="mood-label">Down</span>
+                            </button>
+                            <button class="mood-btn" data-mood="anxious" data-plant="herb">
+                                <span class="mood-emoji">😰</span>
+                                <span class="mood-label">Anxious</span>
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="text-center">
+                            <p class="text-muted mb-3">You've already added to your garden today!</p>
+                            <p class="small">Come back tomorrow to grow your garden further</p>
+                            <div class="next-plant-timer">
+                                <i data-feather="clock" class="me-2"></i>
+                                Next plant available in <span id="time-until-tomorrow"></span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Garden Display -->
+        <div class="col-12">
+            <div class="card garden-display">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i data-feather="sun" class="me-2"></i>
+                        Your Garden
+                    </h5>
+                    <div class="garden-controls">
+                        <button class="btn btn-sm btn-outline-secondary" id="toggle-theme" title="Toggle Garden Theme">
+                            <i data-feather="moon"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" id="play-sounds" title="Garden Sounds">
+                            <i data-feather="volume-2"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="garden-container" id="garden-container">
+                        <div class="garden-grid" id="garden-grid">
+                            <!-- Plants will be rendered here -->
+                        </div>
+                        
+                        {% if garden_stats.total_plants == 0 %}
+                        <div class="empty-garden">
+                            <div class="text-center py-5">
+                                <i data-feather="seed" class="empty-garden-icon mb-3"></i>
+                                <h5 class="text-muted">Your garden is waiting to bloom</h5>
+                                <p class="text-muted">Log your mood to plant your first seed!</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journal Integration -->
+        <div class="col-12 mt-4">
+            <div class="card journal-integration">
+                <div class="card-body text-center">
+                    <h6 class="card-title">
+                        <i data-feather="edit-3" class="me-2"></i>
+                        Want to add a special plant?
+                    </h6>
+                    <p class="card-text small text-muted">Write a journal reflection to grow a rare flowering plant in your garden</p>
+                    <a href="{{ url_for('journal') }}" class="btn btn-outline-primary">
+                        <i data-feather="book" class="me-2"></i>
+                        Write in Journal
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Plant Modal -->
+<div class="modal fade" id="plantModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Plant Added!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="new-plant-display mb-3">
+                    <span id="new-plant-icon" class="plant-icon-large"></span>
+                </div>
+                <p id="plant-message" class="mb-2"></p>
+                <small class="text-muted">Keep logging your mood to grow your garden!</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Garden data and functionality
+let gardenData = {{ garden_data|tojson }};
+let canLogToday = {{ can_log_today|tojson }};
+let isDarkTheme = false;
+let soundsEnabled = false;
+
+// Plant types and their visual representations
+const PLANT_TYPES = {
+    flower: { emoji: '🌸', rarity: 'common', message: 'A beautiful flower bloomed!' },
+    tree: { emoji: '🌳', rarity: 'common', message: 'A strong tree has grown!' },
+    cactus: { emoji: '🌵', rarity: 'common', message: 'A resilient cactus appeared!' },
+    sprout: { emoji: '🌱', rarity: 'common', message: 'A tiny sprout emerged!' },
+    herb: { emoji: '🌿', rarity: 'common', message: 'Fresh herbs are growing!' },
+    rare_flower: { emoji: '🌺', rarity: 'rare', message: 'A rare flower bloomed from your reflection!' },
+    bonsai: { emoji: '🪴', rarity: 'rare', message: 'A wise bonsai tree appeared!' }
+};
+
+// Initialize garden on page load
+document.addEventListener('DOMContentLoaded', function() {
+    renderGarden();
+    updateCountdownTimer();
+    
+    // Mood logging event listeners
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const mood = this.dataset.mood;
+            const plantType = this.dataset.plant;
+            logMood(mood, plantType);
+        });
+    });
+    
+    // Garden controls
+    document.getElementById('toggle-theme')?.addEventListener('click', toggleGardenTheme);
+    document.getElementById('play-sounds')?.addEventListener('click', toggleSounds);
+    
+    // Update timer every minute
+    setInterval(updateCountdownTimer, 60000);
+});
+
+function renderGarden() {
+    const container = document.getElementById('garden-grid');
+    if (!container || !gardenData.plants) return;
+    
+    container.innerHTML = '';
+    
+    // Create a 10x8 grid for plants
+    const gridSize = 80;
+    const maxCols = 10;
+    
+    gardenData.plants.forEach((plant, index) => {
+        const plantElement = document.createElement('div');
+        plantElement.className = 'plant-item';
+        plantElement.style.gridColumn = (index % maxCols) + 1;
+        plantElement.style.gridRow = Math.floor(index / maxCols) + 1;
+        
+        const plantIcon = PLANT_TYPES[plant.type] || PLANT_TYPES.flower;
+        plantElement.innerHTML = `
+            <span class="plant-emoji" title="${plant.mood} on ${plant.date}">${plantIcon.emoji}</span>
+        `;
+        
+        // Add entrance animation for new plants
+        if (plant.isNew) {
+            plantElement.classList.add('plant-new');
+            setTimeout(() => plantElement.classList.remove('plant-new'), 1000);
+        }
+        
+        container.appendChild(plantElement);
+    });
+}
+
+function logMood(mood, plantType) {
+    if (!canLogToday) return;
+    
+    // Send mood data to server
+    fetch('/api/garden/log_mood', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            mood: mood,
+            plant_type: plantType,
+            date: new Date().toISOString().split('T')[0]
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update garden data
+            gardenData = data.garden_data;
+            canLogToday = false;
+            
+            // Show new plant modal
+            showNewPlantModal(plantType, mood);
+            
+            // Re-render garden
+            renderGarden();
+            
+            // Update UI
+            document.querySelector('.mood-logger .card-body').innerHTML = `
+                <div class="text-center">
+                    <p class="text-success mb-3">✨ Your garden grew today!</p>
+                    <p class="small text-muted">Come back tomorrow to grow your garden further</p>
+                </div>
+            `;
+            
+            // Update stats
+            document.getElementById('total-plants').textContent = data.garden_data.plants.length;
+            document.getElementById('current-streak').textContent = data.stats.current_streak;
+            document.getElementById('best-streak').textContent = data.stats.best_streak;
+        }
+    })
+    .catch(error => {
+        console.error('Error logging mood:', error);
+        alert('Failed to log mood. Please try again.');
+    });
+}
+
+function showNewPlantModal(plantType, mood) {
+    const modal = new bootstrap.Modal(document.getElementById('plantModal'));
+    const plantInfo = PLANT_TYPES[plantType] || PLANT_TYPES.flower;
+    
+    document.getElementById('new-plant-icon').textContent = plantInfo.emoji;
+    document.getElementById('plant-message').textContent = plantInfo.message;
+    
+    modal.show();
+}
+
+function updateCountdownTimer() {
+    const timer = document.getElementById('time-until-tomorrow');
+    if (!timer) return;
+    
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    const diff = tomorrow - now;
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    timer.textContent = `${hours}h ${minutes}m`;
+}
+
+function toggleGardenTheme() {
+    isDarkTheme = !isDarkTheme;
+    const container = document.getElementById('garden-container');
+    const btn = document.getElementById('toggle-theme');
+    
+    if (isDarkTheme) {
+        container.classList.add('garden-dark');
+        btn.innerHTML = '<i data-feather="sun"></i>';
+    } else {
+        container.classList.remove('garden-dark');
+        btn.innerHTML = '<i data-feather="moon"></i>';
+    }
+    
+    feather.replace();
+}
+
+function toggleSounds() {
+    soundsEnabled = !soundsEnabled;
+    const btn = document.getElementById('play-sounds');
+    
+    if (soundsEnabled) {
+        btn.innerHTML = '<i data-feather="volume-x"></i>';
+        btn.classList.add('active');
+        // In a real implementation, you'd start ambient sounds here
+    } else {
+        btn.innerHTML = '<i data-feather="volume-2"></i>';
+        btn.classList.remove('active');
+        // Stop ambient sounds
+    }
+    
+    feather.replace();
+}
+
+// Initialize Feather icons
+feather.replace();
+</script>
+{% endblock %}

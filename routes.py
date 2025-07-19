@@ -707,3 +707,61 @@ def api_daily_mental_health_tip():
     """API endpoint to get today's mental health tip"""
     daily_tip = get_daily_mental_health_tip()
     return jsonify(daily_tip)
+
+@app.route('/garden')
+@login_required
+def garden():
+    """Garden mood tracking page"""
+    data_manager = get_user_data_manager()
+    
+    # Get garden data
+    garden_data = data_manager.get_garden_data()
+    garden_stats = data_manager.get_garden_stats()
+    
+    # Check if user can log mood today
+    today = date.today().isoformat()
+    can_log_today = not any(plant['date'] == today for plant in garden_data.get('plants', []))
+    
+    return render_template('garden.html',
+                         garden_data=garden_data,
+                         garden_stats=garden_stats,
+                         can_log_today=can_log_today)
+
+@app.route('/api/garden/log_mood', methods=['POST'])
+@login_required
+def api_garden_log_mood():
+    """API endpoint to log mood and add plant to garden"""
+    data_manager = get_user_data_manager()
+    
+    try:
+        data = request.get_json()
+        mood = data.get('mood')
+        plant_type = data.get('plant_type')
+        log_date = data.get('date')
+        
+        if not all([mood, plant_type, log_date]):
+            return jsonify({'success': False, 'error': 'Missing required data'}), 400
+        
+        # Check if already logged today
+        garden_data = data_manager.get_garden_data()
+        if any(plant['date'] == log_date for plant in garden_data.get('plants', [])):
+            return jsonify({'success': False, 'error': 'Already logged today'}), 400
+        
+        # Add plant to garden
+        success = data_manager.add_garden_plant(mood, plant_type, log_date)
+        
+        if success:
+            # Get updated data
+            updated_garden_data = data_manager.get_garden_data()
+            updated_stats = data_manager.get_garden_stats()
+            
+            return jsonify({
+                'success': True,
+                'garden_data': updated_garden_data,
+                'stats': updated_stats
+            })
+        else:
+            return jsonify({'success': False, 'error': 'Failed to add plant'}), 500
+            
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
