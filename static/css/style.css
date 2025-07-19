@@ -297,3 +297,17 @@ footer {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--bs-primary);
 }
+
+/* Daily tip highlight */
+.daily-tip-highlight {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border-left: 4px solid var(--bs-primary);
+}
+
+.tip-date {
+    background: rgba(var(--bs-primary-rgb), 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+}
