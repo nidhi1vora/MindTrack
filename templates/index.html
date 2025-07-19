@@ -13,6 +13,21 @@
                     Welcome to Your Mental Health Journey
                 </h1>
                 <p class="card-text lead mb-4">Track your daily well-being and build healthy habits</p>
+                <!-- Daily Mental Health Tip -->
+                <div class="daily-tip-card mb-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h5 class="card-title mb-2">
+                                <i data-feather="heart" class="me-2"></i>
+                                Today's Mental Health Tip
+                            </h5>
+                            <h6 class="card-subtitle mb-2 opacity-75">{{ daily_mental_health_tip.title }}</h6>
+                            <p class="card-text">{{ daily_mental_health_tip.tip }}</p>
+                            <small class="opacity-75">Category: {{ daily_mental_health_tip.category }}</small>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="daily-prompt-card">
                     <h5 class="text-info mb-3">
                         <i data-feather="message-circle" class="me-2"></i>

@@ -1,0 +1,13 @@
+{
+  "1": {
+    "id": "1",
+    "email": "nidhi1vora@gmail.com",
+    "password_hash": "scrypt:32768:8:1$rUP2N7Dr8kGczGmu$9d2892bdcc4b9976d9db258f52e990410b563065e3fe7b6e869f4be01b057dd96dcecca061a8033e7dfa3e9ddc0b169b78a63a3f678d43d8c147343d84f743e6",
+    "name": "Nifhi",
+    "theme": "dark",
+    "email_notifications": false,
+    "sms_notifications": false,
+    "push_notifications": true,
+    "created_at": "2025-07-19T05:19:54.176255"
+  }
+}

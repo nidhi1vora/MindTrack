@@ -26,6 +26,165 @@ DAILY_PROMPTS = [
     "What's one way you can connect with others today?"
 ]
 
+# Daily Mental Health Tips - Changes every day
+DAILY_MENTAL_HEALTH_TIPS = [
+    {
+        "title": "Practice Deep Breathing",
+        "tip": "Take 5 minutes to practice deep breathing. Breathe in for 4 counts, hold for 4, exhale for 6. This activates your parasympathetic nervous system and reduces stress.",
+        "category": "Breathing & Relaxation"
+    },
+    {
+        "title": "Express Gratitude",
+        "tip": "Write down 3 things you're grateful for today. Gratitude practice rewires your brain to notice positive aspects of life and improves overall mood.",
+        "category": "Mindfulness & Gratitude"
+    },
+    {
+        "title": "Move Your Body",
+        "tip": "Even 10 minutes of physical activity can boost your mood. Try a short walk, stretching, or dancing to your favorite song.",
+        "category": "Physical Wellness"
+    },
+    {
+        "title": "Connect with Nature",
+        "tip": "Spend time outdoors, even if it's just looking out a window at trees or sky. Nature exposure reduces cortisol levels and improves mental clarity.",
+        "category": "Nature & Environment"
+    },
+    {
+        "title": "Practice Self-Compassion",
+        "tip": "Talk to yourself as you would to a good friend. Replace self-criticism with understanding and kindness toward yourself.",
+        "category": "Self-Care & Compassion"
+    },
+    {
+        "title": "Limit News Consumption",
+        "tip": "Set boundaries around news and social media. Choose specific times to check updates rather than constantly scrolling throughout the day.",
+        "category": "Digital Wellness"
+    },
+    {
+        "title": "Focus on the Present",
+        "tip": "Practice the 5-4-3-2-1 grounding technique: notice 5 things you see, 4 you can touch, 3 you hear, 2 you smell, and 1 you taste.",
+        "category": "Mindfulness & Grounding"
+    },
+    {
+        "title": "Prioritize Quality Sleep",
+        "tip": "Create a relaxing bedtime routine. Avoid screens 1 hour before bed and keep your bedroom cool, dark, and quiet for better rest.",
+        "category": "Sleep & Rest"
+    },
+    {
+        "title": "Reach Out to Someone",
+        "tip": "Connect with a friend, family member, or loved one today. Social connections are vital for mental health and emotional well-being.",
+        "category": "Social Connection"
+    },
+    {
+        "title": "Try Creative Expression",
+        "tip": "Engage in any form of creativity - drawing, writing, singing, cooking. Creative activities reduce stress and provide emotional outlets.",
+        "category": "Creativity & Expression"
+    },
+    {
+        "title": "Set Small, Achievable Goals",
+        "tip": "Choose one small task you can complete today. Accomplishing small goals builds confidence and creates positive momentum.",
+        "category": "Goal Setting & Achievement"
+    },
+    {
+        "title": "Practice Mindful Eating",
+        "tip": "Eat one meal today without distractions. Pay attention to flavors, textures, and how food makes you feel physically and emotionally.",
+        "category": "Nutrition & Mindfulness"
+    },
+    {
+        "title": "Declutter Your Space",
+        "tip": "Organize one small area of your living space. A tidy environment can reduce mental clutter and create a sense of accomplishment.",
+        "category": "Environment & Organization"
+    },
+    {
+        "title": "Learn Something New",
+        "tip": "Spend 15 minutes learning about something that interests you. Learning new things stimulates brain growth and boosts self-esteem.",
+        "category": "Learning & Growth"
+    },
+    {
+        "title": "Practice Saying No",
+        "tip": "It's okay to decline requests that overwhelm you. Setting healthy boundaries protects your energy and mental health.",
+        "category": "Boundaries & Self-Care"
+    },
+    {
+        "title": "Use Positive Affirmations",
+        "tip": "Choose a positive statement about yourself and repeat it throughout the day. 'I am capable,' 'I am worthy,' or 'I am growing stronger.'",
+        "category": "Self-Talk & Affirmations"
+    },
+    {
+        "title": "Take Breaks During Work",
+        "tip": "Every hour, take a 5-minute break from work or screens. Step away, stretch, or simply rest your eyes to prevent mental fatigue.",
+        "category": "Work-Life Balance"
+    },
+    {
+        "title": "Listen to Calming Music",
+        "tip": "Create a playlist of songs that make you feel peaceful or happy. Music has powerful effects on mood and can reduce anxiety.",
+        "category": "Music & Sound"
+    },
+    {
+        "title": "Practice Forgiveness",
+        "tip": "Consider forgiving someone (including yourself) for a past mistake. Letting go of resentment frees up mental energy for positive growth.",
+        "category": "Emotional Healing"
+    },
+    {
+        "title": "Hydrate Mindfully",
+        "tip": "Drink water throughout the day and notice how it makes you feel. Dehydration can affect mood, energy, and cognitive function.",
+        "category": "Physical Wellness"
+    },
+    {
+        "title": "Practice Random Acts of Kindness",
+        "tip": "Do something kind for someone else today, even something small. Helping others boosts your own mood and creates positive connections.",
+        "category": "Kindness & Service"
+    },
+    {
+        "title": "Embrace Imperfection",
+        "tip": "Remember that mistakes are part of learning and growth. Perfectionism can create unnecessary stress and anxiety.",
+        "category": "Self-Acceptance"
+    },
+    {
+        "title": "Create a Calming Environment",
+        "tip": "Add something soothing to your space today - a plant, soft lighting, or pleasant scent. Your environment affects your mood.",
+        "category": "Environment & Ambiance"
+    },
+    {
+        "title": "Practice Body Awareness",
+        "tip": "Do a quick body scan. Notice areas of tension and consciously relax them. Physical awareness helps process emotions.",
+        "category": "Body & Mind Connection"
+    },
+    {
+        "title": "Limit Multitasking",
+        "tip": "Focus on one task at a time today. Single-tasking reduces stress and improves the quality of your work and attention.",
+        "category": "Focus & Productivity"
+    },
+    {
+        "title": "Celebrate Small Wins",
+        "tip": "Acknowledge something you accomplished today, no matter how small. Celebrating progress builds resilience and motivation.",
+        "category": "Self-Recognition"
+    },
+    {
+        "title": "Try Progressive Muscle Relaxation",
+        "tip": "Tense and then relax each muscle group in your body, starting from your toes and working up. This releases physical tension.",
+        "category": "Relaxation Techniques"
+    },
+    {
+        "title": "Write Your Thoughts",
+        "tip": "Spend 10 minutes writing about your thoughts or feelings. Journaling helps process emotions and gain clarity.",
+        "category": "Writing & Reflection"
+    },
+    {
+        "title": "Practice Acceptance",
+        "tip": "Identify one thing you can't control and practice accepting it. Focus your energy on what you can influence instead.",
+        "category": "Acceptance & Control"
+    },
+    {
+        "title": "Use Your Senses",
+        "tip": "Engage one of your senses intentionally - smell a flower, feel a soft texture, or listen to birds singing. Sensory experiences ground you in the present.",
+        "category": "Sensory Awareness"
+    },
+    {
+        "title": "Plan Something to Look Forward To",
+        "tip": "Schedule something enjoyable for this week or next - a movie, meal with a friend, or hobby time. Anticipation boosts mood.",
+        "category": "Future Planning & Joy"
+    }
+]
+
 # Motivational sayings for notifications
 MOTIVATIONAL_SAYINGS = [
     "You are stronger than you think and more capable than you realize.",
@@ -50,6 +209,22 @@ MOTIVATIONAL_SAYINGS = [
     "Tomorrow is a new day with new possibilities."
 ]
 
+def get_daily_mental_health_tip():
+    """Get today's mental health tip based on current date"""
+    today = datetime.now()
+    # Create a seed based on year and day of year to ensure same tip per day
+    day_seed = today.year * 1000 + today.timetuple().tm_yday
+    random.seed(day_seed)
+    
+    # Select today's tip
+    tip_index = random.randint(0, len(DAILY_MENTAL_HEALTH_TIPS) - 1)
+    daily_tip = DAILY_MENTAL_HEALTH_TIPS[tip_index]
+    
+    # Reset random seed
+    random.seed()
+    
+    return daily_tip
+
 def get_user_data_manager():
     """Get data manager for current user"""
     if current_user.is_authenticated:
@@ -65,9 +240,10 @@ def index():
     # Get user-specific data manager
     data_manager = get_user_data_manager()
     
-    # Get today's prompt
+    # Get today's prompt and daily mental health tip
     today_index = datetime.now().timetuple().tm_yday % len(DAILY_PROMPTS)
     daily_prompt = DAILY_PROMPTS[today_index]
+    daily_mental_health_tip = get_daily_mental_health_tip()
     
     # Get recent entries for dashboard
     recent_moods = data_manager.get_mood_entries(7)
@@ -97,6 +273,7 @@ def index():
     
     return render_template('index.html', 
                          daily_prompt=daily_prompt,
+                         daily_mental_health_tip=daily_mental_health_tip,
                          stats=stats,
                          recent_moods=recent_moods[:3],
                          recent_sleep=recent_sleep[:3],
@@ -492,3 +669,10 @@ def api_motivational_saying():
     """API endpoint to get a random motivational saying"""
     saying = random.choice(MOTIVATIONAL_SAYINGS)
     return jsonify({'saying': saying})
+
+@app.route('/api/daily_mental_health_tip')
+@login_required
+def api_daily_mental_health_tip():
+    """API endpoint to get today's mental health tip"""
+    daily_tip = get_daily_mental_health_tip()
+    return jsonify(daily_tip)
