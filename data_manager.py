@@ -29,7 +29,10 @@ class DataManager:
                         'journal_entries': [],
                         'journal_password_hash': None,
                         'settings': {
-                            'created_date': datetime.now().isoformat()
+                            'created_date': datetime.now().isoformat(),
+                            'notification_frequency': 'daily',
+                            'notifications_enabled': False,
+                            'last_notification': None
                         }
                     }
                     for key in default_structure:
@@ -45,7 +48,10 @@ class DataManager:
                     'journal_entries': [],
                     'journal_password_hash': None,
                     'settings': {
-                        'created_date': datetime.now().isoformat()
+                        'created_date': datetime.now().isoformat(),
+                        'notification_frequency': 'daily',
+                        'notifications_enabled': False,
+                        'last_notification': None
                     }
                 }
         except Exception as e:
@@ -58,7 +64,10 @@ class DataManager:
                 'journal_entries': [],
                 'journal_password_hash': None,
                 'settings': {
-                    'created_date': datetime.now().isoformat()
+                    'created_date': datetime.now().isoformat(),
+                    'notification_frequency': 'daily',
+                    'notifications_enabled': False,
+                    'last_notification': None
                 }
             }
     
@@ -208,6 +217,29 @@ class DataManager:
                 insights.append("🌱 Remember, building habits takes time. Focus on progress, not perfection.")
         
         return insights
+    
+    def update_notification_settings(self, enabled=None, frequency=None):
+        """Update notification preferences"""
+        if enabled is not None:
+            self.data['settings']['notifications_enabled'] = enabled
+        if frequency is not None:
+            self.data['settings']['notification_frequency'] = frequency
+        return self.save_data()
+    
+    def get_notification_settings(self):
+        """Get current notification settings"""
+        return {
+            'enabled': self.data['settings'].get('notifications_enabled', False),
+            'frequency': self.data['settings'].get('notification_frequency', 'daily'),
+            'last_notification': self.data['settings'].get('last_notification')
+        }
+    
+    def update_last_notification(self, timestamp=None):
+        """Update the timestamp of the last notification sent"""
+        if timestamp is None:
+            timestamp = datetime.now().isoformat()
+        self.data['settings']['last_notification'] = timestamp
+        return self.save_data()
 
 # Global data manager instance
 data_manager = DataManager()

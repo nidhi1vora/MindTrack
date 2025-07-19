@@ -162,6 +162,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof feather !== 'undefined') {
         feather.replace();
     }
+    
+    // Initialize notifications
+    initializeNotifications();
 });
 
 // Utility Functions
@@ -263,6 +266,56 @@ function requestNotificationPermission() {
     }
 }
 
+// Notification management
+function initializeNotifications() {
+    // Request permission on first visit
+    if ('Notification' in window && Notification.permission === 'default') {
+        setTimeout(requestNotificationPermission, 2000);
+    }
+}
+
+function scheduleMotivationalNotifications(enabled, frequency) {
+    // Clear existing schedules
+    if (window.motivationalInterval) {
+        clearInterval(window.motivationalInterval);
+        window.motivationalInterval = null;
+    }
+    
+    if (!enabled || !('Notification' in window) || Notification.permission !== 'granted') {
+        return;
+    }
+    
+    let intervalMs;
+    switch(frequency) {
+        case 'hourly': intervalMs = 60 * 60 * 1000; break;
+        case '3hours': intervalMs = 3 * 60 * 60 * 1000; break;
+        case '6hours': intervalMs = 6 * 60 * 60 * 1000; break;
+        case 'daily': intervalMs = 24 * 60 * 60 * 1000; break;
+        case 'weekly': intervalMs = 7 * 24 * 60 * 60 * 1000; break;
+        default: intervalMs = 24 * 60 * 60 * 1000;
+    }
+    
+    window.motivationalInterval = setInterval(() => {
+        sendMotivationalNotification();
+    }, intervalMs);
+    
+    console.log(`Motivational notifications scheduled every ${intervalMs / 1000 / 60} minutes`);
+}
+
+function sendMotivationalNotification() {
+    fetch('/api/motivational_saying')
+        .then(response => response.json())
+        .then(data => {
+            new Notification('MindTrack - Daily Motivation', {
+                body: data.saying,
+                icon: '/static/favicon.ico',
+                tag: 'mindtrack-motivation',
+                requireInteraction: false
+            });
+        })
+        .catch(error => console.log('Notification error:', error));
+}
+
 // Export functions for use in templates
 window.MindTrack = {
     updateMoodDisplay: function(value) {
@@ -279,7 +332,10 @@ window.MindTrack = {
     },
     
     showNotification,
-    requestNotificationPermission
+    requestNotificationPermission,
+    scheduleMotivationalNotifications,
+    sendMotivationalNotification,
+    initializeNotifications
 };
 
 // Make functions globally available for inline use

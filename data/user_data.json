@@ -4,7 +4,7 @@
   "habits": [],
   "habit_entries": [],
   "journal_entries": [],
-  "journal_password_hash": null,
+  "journal_password_hash": "scrypt:32768:8:1$Vv3w0FYCmHLuBTjl$882f0f9c6786b77afcff5d098c85a947b15423fb3998aa176f5059db04ac21b315f2aafe419052409f5899c3bb77ed50101f729510f41576a9a4ba6cb0c8895d",
   "settings": {
     "created_date": "2025-07-19T00:00:00"
   }

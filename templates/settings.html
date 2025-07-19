@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - MindTrack{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Page Header -->
+    <div class="col-12 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>
+                    <i data-feather="settings" class="me-2"></i>
+                    Settings
+                </h2>
+                <p class="text-muted">Customize your MindTrack experience</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Settings -->
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="bell" class="me-2"></i>
+                    Motivational Notifications
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    Get regular motivational reminders to support your mental health journey. 
+                    We'll send you encouraging messages at your chosen frequency.
+                </p>
+                
+                <form method="POST" id="notification-form">
+                    <input type="hidden" name="action" value="update_notifications">
+                    
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="notifications_enabled" 
+                                   name="notifications_enabled" {{ 'checked' if notification_settings.enabled else '' }}>
+                            <label class="form-check-label" for="notifications_enabled">
+                                <strong>Enable Motivational Notifications</strong>
+                            </label>
+                        </div>
+                        <div class="form-text">
+                            Allow MindTrack to send you motivational messages through browser notifications
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="notification_frequency" class="form-label">Notification Frequency</label>
+                        <select class="form-select" id="notification_frequency" name="notification_frequency">
+                            <option value="hourly" {{ 'selected' if notification_settings.frequency == 'hourly' else '' }}>
+                                Every Hour
+                            </option>
+                            <option value="3hours" {{ 'selected' if notification_settings.frequency == '3hours' else '' }}>
+                                Every 3 Hours
+                            </option>
+                            <option value="6hours" {{ 'selected' if notification_settings.frequency == '6hours' else '' }}>
+                                Every 6 Hours
+                            </option>
+                            <option value="daily" {{ 'selected' if notification_settings.frequency == 'daily' else '' }}>
+                                Daily
+                            </option>
+                            <option value="weekly" {{ 'selected' if notification_settings.frequency == 'weekly' else '' }}>
+                                Weekly
+                            </option>
+                        </select>
+                        <div class="form-text">
+                            Choose how often you'd like to receive motivational messages
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="save" class="me-2"></i>
+                        Save Notification Settings
+                    </button>
+                </form>
+
+                <hr class="my-4">
+
+                <!-- Test Notification -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">Test Notifications</h6>
+                        <p class="text-muted small mb-0">Make sure notifications are working properly</p>
+                    </div>
+                    <button type="button" class="btn btn-outline-secondary" onclick="testNotification()">
+                        <i data-feather="zap" class="me-2"></i>
+                        Send Test Message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Status -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="info" class="me-2"></i>
+                    Notification Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="notification-status-info">
+                    <div class="status-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Browser Permission:</span>
+                            <span class="badge" id="permission-status">Checking...</span>
+                        </div>
+                    </div>
+                    
+                    <div class="status-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Notifications Enabled:</span>
+                            <span class="badge {{ 'bg-success' if notification_settings.enabled else 'bg-secondary' }}">
+                                {{ 'Yes' if notification_settings.enabled else 'No' }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="status-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Frequency:</span>
+                            <span class="badge bg-info">
+                                {% if notification_settings.frequency == 'hourly' %}Every Hour
+                                {% elif notification_settings.frequency == '3hours' %}Every 3 Hours
+                                {% elif notification_settings.frequency == '6hours' %}Every 6 Hours
+                                {% elif notification_settings.frequency == 'daily' %}Daily
+                                {% elif notification_settings.frequency == 'weekly' %}Weekly
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    {% if notification_settings.last_notification %}
+                    <div class="status-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Last Sent:</span>
+                            <span class="small">{{ notification_settings.last_notification[:10] }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <hr class="my-3">
+
+                <div class="text-center">
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="requestPermission()">
+                        <i data-feather="unlock" class="me-1"></i>
+                        Enable Browser Notifications
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tips and Information -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="help-circle" class="me-2"></i>
+                    About Notifications
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="tip-card">
+                            <i data-feather="shield" class="text-success mb-2"></i>
+                            <h6>Privacy First</h6>
+                            <p class="small text-muted">All notifications are generated locally on your device. No personal data is sent externally.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="tip-card">
+                            <i data-feather="clock" class="text-info mb-2"></i>
+                            <h6>Smart Timing</h6>
+                            <p class="small text-muted">Notifications are only sent when you're actively using your browser to avoid interruptions.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="tip-card">
+                            <i data-feather="heart" class="text-danger mb-2"></i>
+                            <h6>Positive Focus</h6>
+                            <p class="small text-muted">All messages are carefully crafted to provide encouragement and support for your mental health journey.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Check notification permission status on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updatePermissionStatus();
+    
+    // Start notification scheduler if enabled
+    if ({{ 'true' if notification_settings.enabled else 'false' }}) {
+        startNotificationScheduler();
+    }
+    
+    // Watch for form changes to restart scheduler
+    document.getElementById('notification-form').addEventListener('submit', function() {
+        setTimeout(function() {
+            location.reload();
+        }, 1000);
+    });
+});
+
+function updatePermissionStatus() {
+    const statusBadge = document.getElementById('permission-status');
+    
+    if (!('Notification' in window)) {
+        statusBadge.textContent = 'Not Supported';
+        statusBadge.className = 'badge bg-danger';
+    } else if (Notification.permission === 'granted') {
+        statusBadge.textContent = 'Granted';
+        statusBadge.className = 'badge bg-success';
+    } else if (Notification.permission === 'denied') {
+        statusBadge.textContent = 'Denied';
+        statusBadge.className = 'badge bg-danger';
+    } else {
+        statusBadge.textContent = 'Not Requested';
+        statusBadge.className = 'badge bg-warning';
+    }
+}
+
+function requestPermission() {
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission().then(function(permission) {
+            updatePermissionStatus();
+            if (permission === 'granted') {
+                testNotification();
+            }
+        });
+    }
+}
+
+function testNotification() {
+    if ('Notification' in window && Notification.permission === 'granted') {
+        fetch('/api/motivational_saying')
+            .then(response => response.json())
+            .then(data => {
+                new Notification('MindTrack - Test Message', {
+                    body: data.saying,
+                    icon: '/static/favicon.ico',
+                    badge: '/static/favicon.ico'
+                });
+            });
+    } else {
+        alert('Please enable browser notifications first.');
+    }
+}
+
+function startNotificationScheduler() {
+    const frequency = '{{ notification_settings.frequency }}';
+    let intervalMs;
+    
+    switch(frequency) {
+        case 'hourly':
+            intervalMs = 60 * 60 * 1000; // 1 hour
+            break;
+        case '3hours':
+            intervalMs = 3 * 60 * 60 * 1000; // 3 hours
+            break;
+        case '6hours':
+            intervalMs = 6 * 60 * 60 * 1000; // 6 hours
+            break;
+        case 'daily':
+            intervalMs = 24 * 60 * 60 * 1000; // 24 hours
+            break;
+        case 'weekly':
+            intervalMs = 7 * 24 * 60 * 60 * 1000; // 7 days
+            break;
+        default:
+            intervalMs = 24 * 60 * 60 * 1000; // Default to daily
+    }
+    
+    // Clear any existing interval
+    if (window.notificationInterval) {
+        clearInterval(window.notificationInterval);
+    }
+    
+    // Set up new interval
+    window.notificationInterval = setInterval(function() {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            fetch('/api/motivational_saying')
+                .then(response => response.json())
+                .then(data => {
+                    new Notification('MindTrack - Motivational Message', {
+                        body: data.saying,
+                        icon: '/static/favicon.ico',
+                        badge: '/static/favicon.ico'
+                    });
+                });
+        }
+    }, intervalMs);
+    
+    console.log('Notification scheduler started with interval:', intervalMs / 1000 / 60, 'minutes');
+}
+</script>
+{% endblock %}

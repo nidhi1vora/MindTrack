@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MindTrack - Mental Health Tracker{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     
     <!-- Bootstrap CSS with Replit dark theme -->
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
@@ -62,6 +63,11 @@
                             <i data-feather="trending-up" class="me-1"></i>Insights
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('settings') }}">
+                            <i data-feather="settings" class="me-1"></i>Settings
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -105,6 +111,18 @@
     <!-- Initialize Feather Icons -->
     <script>
         feather.replace();
+        
+        // Initialize notifications with user settings if they exist
+        {% if notification_settings is defined and notification_settings.enabled %}
+        setTimeout(function() {
+            if (window.MindTrack && window.MindTrack.scheduleMotivationalNotifications) {
+                window.MindTrack.scheduleMotivationalNotifications(
+                    {{ 'true' if notification_settings.enabled else 'false' }}, 
+                    '{{ notification_settings.frequency }}'
+                );
+            }
+        }, 1000);
+        {% endif %}
     </script>
 
     {% block scripts %}{% endblock %}

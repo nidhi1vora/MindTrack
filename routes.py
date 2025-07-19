@@ -23,6 +23,30 @@ DAILY_PROMPTS = [
     "What's one way you can connect with others today?"
 ]
 
+# Motivational sayings for notifications
+MOTIVATIONAL_SAYINGS = [
+    "You are stronger than you think and more capable than you realize.",
+    "Every small step forward is progress worth celebrating.",
+    "Your mental health journey is unique and valid.",
+    "It's okay to have difficult days - they don't define you.",
+    "You deserve the same compassion you show others.",
+    "Taking care of your mental health is a sign of strength, not weakness.",
+    "You are worthy of love, peace, and happiness.",
+    "Progress isn't always linear, and that's perfectly okay.",
+    "Your feelings are valid, and you have the strength to work through them.",
+    "You've overcome challenges before, and you can do it again.",
+    "Self-care isn't selfish - it's necessary.",
+    "You are not alone in your journey.",
+    "Small acts of self-kindness can create big changes.",
+    "Your story isn't over yet - there are beautiful chapters ahead.",
+    "You have the power to create positive change in your life.",
+    "Rest is productive too - honor what your mind and body need.",
+    "You are enough, exactly as you are right now.",
+    "Healing isn't a destination, it's a journey worth taking.",
+    "Your courage to keep going inspires more than you know.",
+    "Tomorrow is a new day with new possibilities."
+]
+
 @app.route('/')
 def index():
     """Main dashboard"""
@@ -53,11 +77,15 @@ def index():
         completed_habits = sum(1 for entry in recent_habits if entry['completed'])
         stats['habit_completion_week'] = round((completed_habits / len(recent_habits)) * 100)
     
+    # Get notification settings for the dashboard
+    notification_settings = data_manager.get_notification_settings()
+    
     return render_template('index.html', 
                          daily_prompt=daily_prompt,
                          stats=stats,
                          recent_moods=recent_moods[:3],
-                         recent_sleep=recent_sleep[:3])
+                         recent_sleep=recent_sleep[:3],
+                         notification_settings=notification_settings)
 
 @app.route('/mood', methods=['GET', 'POST'])
 def mood_tracking():
@@ -223,3 +251,29 @@ def api_sleep_data():
         'duration': [entry['duration'] for entry in entries],
         'quality': [entry['quality'] for entry in entries]
     })
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    """Settings page for notifications and preferences"""
+    if request.method == 'POST':
+        action = request.form.get('action')
+        
+        if action == 'update_notifications':
+            enabled = request.form.get('notifications_enabled') == 'on'
+            frequency = request.form.get('notification_frequency', 'daily')
+            
+            if data_manager.update_notification_settings(enabled=enabled, frequency=frequency):
+                flash('Notification settings updated successfully!', 'success')
+            else:
+                flash('Error updating notification settings.', 'error')
+        
+        return redirect(url_for('settings'))
+    
+    notification_settings = data_manager.get_notification_settings()
+    return render_template('settings.html', notification_settings=notification_settings)
+
+@app.route('/api/motivational_saying')
+def api_motivational_saying():
+    """API endpoint to get a random motivational saying"""
+    saying = random.choice(MOTIVATIONAL_SAYINGS)
+    return jsonify({'saying': saying})
