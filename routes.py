@@ -7,8 +7,8 @@ from datetime import datetime, date
 import random
 import re
 
-# Motivational prompts
-DAILY_PROMPTS = [
+# Daily reflection prompts - Changes every day
+DAILY_REFLECTION_PROMPTS = [
     "What are three things you're grateful for today?",
     "How did you show kindness to yourself or others today?",
     "What's one small victory you achieved today?",
@@ -23,7 +23,23 @@ DAILY_PROMPTS = [
     "What's one lesson you learned about yourself recently?",
     "What makes you feel most confident?",
     "How can you practice self-compassion today?",
-    "What's one way you can connect with others today?"
+    "What's one way you can connect with others today?",
+    "What challenge helped you grow stronger recently?",
+    "How do you want to feel at the end of today?",
+    "What's one thing you appreciate about your body today?",
+    "What boundary do you need to set for your well-being?",
+    "How can you honor your needs today?",
+    "What would you tell a friend going through what you're experiencing?",
+    "What's one thing you've overcome that you're proud of?",
+    "How can you create more joy in your daily routine?",
+    "What aspect of your life deserves more attention?",
+    "What's one way you can practice patience with yourself today?",
+    "How has your perspective changed recently?",
+    "What's something you're curious to explore about yourself?",
+    "How can you make today feel meaningful?",
+    "What's one thing you've learned to let go of?",
+    "How do you want to nurture yourself today?",
+    "What strength do you possess that others might not see?"
 ]
 
 # Daily Mental Health Tips - Changes every day
@@ -225,6 +241,22 @@ def get_daily_mental_health_tip():
     
     return daily_tip
 
+def get_daily_reflection_prompt():
+    """Get today's reflection prompt based on current date"""
+    today = datetime.now()
+    # Create a different seed for prompts to ensure variety from tips
+    prompt_seed = (today.year * 1000 + today.timetuple().tm_yday) * 2 + 1
+    random.seed(prompt_seed)
+    
+    # Select today's prompt
+    prompt_index = random.randint(0, len(DAILY_REFLECTION_PROMPTS) - 1)
+    daily_prompt = DAILY_REFLECTION_PROMPTS[prompt_index]
+    
+    # Reset random seed
+    random.seed()
+    
+    return daily_prompt
+
 def get_user_data_manager():
     """Get data manager for current user"""
     if current_user.is_authenticated:
@@ -240,9 +272,8 @@ def index():
     # Get user-specific data manager
     data_manager = get_user_data_manager()
     
-    # Get today's prompt and daily mental health tip
-    today_index = datetime.now().timetuple().tm_yday % len(DAILY_PROMPTS)
-    daily_prompt = DAILY_PROMPTS[today_index]
+    # Get today's dynamic prompt and mental health tip
+    daily_prompt = get_daily_reflection_prompt()
     daily_mental_health_tip = get_daily_mental_health_tip()
     
     # Get recent entries for dashboard
