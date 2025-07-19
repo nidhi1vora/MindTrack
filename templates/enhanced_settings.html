@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - MindTrack{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i data-feather="settings" class="me-2"></i>
+                Settings
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Settings</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Display flash messages -->
+    <div class="col-12">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'info' if category == 'info' else 'success' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- User Profile Settings -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="user" class="me-2"></i>
+                    Profile Settings
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    <input type="hidden" name="action" value="update_profile">
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                               value="{{ user.name or '' }}" placeholder="Enter your name">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               value="{{ user.email }}" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid email address.
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6 class="mb-3">
+                        <i data-feather="key" class="me-2"></i>
+                        Change Password
+                    </h6>
+                    
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="current_password" name="current_password" 
+                               placeholder="Enter current password">
+                        <small class="form-text text-muted">Required only if changing password</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" 
+                               placeholder="Enter new password" minlength="6">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" 
+                               placeholder="Confirm new password">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="save" class="me-1"></i>
+                        Update Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme and Appearance -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="palette" class="me-2"></i>
+                    Theme & Appearance
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="update_theme">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Choose Theme</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-check theme-option">
+                                    <input class="form-check-input" type="radio" name="theme" id="theme_dark" 
+                                           value="dark" {{ 'checked' if user.theme == 'dark' else '' }}>
+                                    <label class="form-check-label w-100" for="theme_dark">
+                                        <div class="theme-preview p-2 rounded border">
+                                            <i data-feather="moon" class="me-2"></i>
+                                            <strong>Dark</strong>
+                                            <small class="d-block text-muted">Easy on the eyes</small>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check theme-option">
+                                    <input class="form-check-input" type="radio" name="theme" id="theme_light" 
+                                           value="light" {{ 'checked' if user.theme == 'light' else '' }}>
+                                    <label class="form-check-label w-100" for="theme_light">
+                                        <div class="theme-preview p-2 rounded border">
+                                            <i data-feather="sun" class="me-2"></i>
+                                            <strong>Light</strong>
+                                            <small class="d-block text-muted">Bright and clean</small>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="palette" class="me-1"></i>
+                        Update Theme
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Preferences -->
+    <div class="col-12 mt-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="bell" class="me-2"></i>
+                    Notification Preferences
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="update_notifications">
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>Communication Preferences</h6>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="email_notifications" 
+                                       name="email_notifications" {{ 'checked' if user.email_notifications }}>
+                                <label class="form-check-label" for="email_notifications">
+                                    <i data-feather="mail" class="me-1"></i>
+                                    Email Notifications
+                                </label>
+                                <small class="d-block text-muted">Receive reminders via email</small>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="sms_notifications" 
+                                       name="sms_notifications" {{ 'checked' if user.sms_notifications }}>
+                                <label class="form-check-label" for="sms_notifications">
+                                    <i data-feather="message-circle" class="me-1"></i>
+                                    SMS Notifications
+                                </label>
+                                <small class="d-block text-muted">Receive text message alerts</small>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="push_notifications" 
+                                       name="push_notifications" {{ 'checked' if user.push_notifications }}>
+                                <label class="form-check-label" for="push_notifications">
+                                    <i data-feather="smartphone" class="me-1"></i>
+                                    Push Notifications
+                                </label>
+                                <small class="d-block text-muted">Receive mobile push alerts</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <h6>Browser Notifications</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="browser_notifications_enabled" 
+                                               name="browser_notifications_enabled" {{ 'checked' if notification_settings.enabled }}>
+                                        <label class="form-check-label" for="browser_notifications_enabled">
+                                            <strong>Enable Motivational Messages</strong>
+                                            <br><small class="text-muted">Receive encouraging browser notifications</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="notification_frequency" class="form-label">Frequency</label>
+                                    <select class="form-select" id="notification_frequency" name="notification_frequency">
+                                        <option value="hourly" {{ 'selected' if notification_settings.frequency == 'hourly' }}>Every Hour</option>
+                                        <option value="3hours" {{ 'selected' if notification_settings.frequency == '3hours' }}>Every 3 Hours</option>
+                                        <option value="6hours" {{ 'selected' if notification_settings.frequency == '6hours' }}>Every 6 Hours</option>
+                                        <option value="daily" {{ 'selected' if notification_settings.frequency == 'daily' }}>Daily</option>
+                                        <option value="weekly" {{ 'selected' if notification_settings.frequency == 'weekly' }}>Weekly</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i data-feather="save" class="me-1"></i>
+                            Save Notification Settings
+                        </button>
+                        
+                        <button type="button" class="btn btn-outline-secondary" onclick="testNotification()">
+                            <i data-feather="play-circle" class="me-1"></i>
+                            Test Browser Notification
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Status -->
+    <div class="col-12 mt-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="info" class="me-2"></i>
+                    Browser Notification Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="status-display">
+                    <div class="status-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Browser Permissions:</span>
+                            <span class="badge" id="permission-status">
+                                <span class="spinner-border spinner-border-sm me-1"></span>
+                                Checking...
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="status-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Browser Notifications:</span>
+                            <span class="badge {{ 'bg-success' if notification_settings.enabled else 'bg-secondary' }}">
+                                {{ 'Enabled' if notification_settings.enabled else 'Disabled' }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="status-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Frequency:</span>
+                            <span class="badge bg-info">
+                                {% if notification_settings.frequency == 'hourly' %}Every Hour
+                                {% elif notification_settings.frequency == '3hours' %}Every 3 Hours
+                                {% elif notification_settings.frequency == '6hours' %}Every 6 Hours
+                                {% elif notification_settings.frequency == 'daily' %}Daily
+                                {% elif notification_settings.frequency == 'weekly' %}Weekly
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    {% if notification_settings.last_notification %}
+                    <div class="status-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Last Sent:</span>
+                            <span class="small">{{ notification_settings.last_notification[:10] }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <hr class="my-3">
+
+                <div class="text-center">
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="requestPermission()">
+                        <i data-feather="unlock" class="me-1"></i>
+                        Enable Browser Notifications
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Dashboard -->
+    <div class="col-12 mt-3">
+        <div class="text-center">
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                <i data-feather="arrow-left" class="me-1"></i>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add form validation for password matching
+(function() {
+    'use strict';
+    
+    function validatePasswords() {
+        const newPassword = document.getElementById('new_password');
+        const confirmPassword = document.getElementById('confirm_password');
+        
+        if (newPassword.value && confirmPassword.value) {
+            if (newPassword.value !== confirmPassword.value) {
+                confirmPassword.setCustomValidity('Passwords do not match');
+            } else {
+                confirmPassword.setCustomValidity('');
+            }
+        } else {
+            confirmPassword.setCustomValidity('');
+        }
+    }
+    
+    window.addEventListener('load', function() {
+        const newPassword = document.getElementById('new_password');
+        const confirmPassword = document.getElementById('confirm_password');
+        
+        if (newPassword && confirmPassword) {
+            newPassword.addEventListener('input', validatePasswords);
+            confirmPassword.addEventListener('input', validatePasswords);
+        }
+        
+        // Form validation
+        var forms = document.getElementsByTagName('form');
+        Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
+})();
+
+// Test notification function
+function testNotification() {
+    if (window.MindTrack && window.MindTrack.testNotification) {
+        window.MindTrack.testNotification();
+    } else {
+        alert('Notification system is loading. Please try again in a moment.');
+    }
+}
+
+// Request notification permission
+function requestPermission() {
+    if (window.MindTrack && window.MindTrack.requestNotificationPermission) {
+        window.MindTrack.requestNotificationPermission();
+    } else {
+        if ("Notification" in window) {
+            Notification.requestPermission().then(function (permission) {
+                if (permission === "granted") {
+                    alert("Notification permission granted!");
+                } else {
+                    alert("Notification permission denied.");
+                }
+            });
+        }
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - MindTrack{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <h2 class="card-title">
+                            <i data-feather="user-plus" class="text-primary me-2"></i>
+                            Join MindTrack
+                        </h2>
+                        <p class="text-muted">Start your mental health journey today</p>
+                    </div>
+
+                    <!-- Display flash messages -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else 'info' if category == 'info' else 'success' }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" novalidate>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name (Optional)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i data-feather="user" class="small"></i>
+                                </span>
+                                <input type="text" class="form-control" id="name" name="name" 
+                                       placeholder="Enter your name" autocomplete="name">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i data-feather="mail" class="small"></i>
+                                </span>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       placeholder="Enter your email" required autocomplete="email">
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter a valid email address.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i data-feather="lock" class="small"></i>
+                                </span>
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       placeholder="Enter a password (min 6 characters)" required 
+                                       autocomplete="new-password" minlength="6">
+                            </div>
+                            <div class="invalid-feedback">
+                                Password must be at least 6 characters long.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i data-feather="lock" class="small"></i>
+                                </span>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" 
+                                       placeholder="Confirm your password" required autocomplete="new-password">
+                            </div>
+                            <div class="invalid-feedback">
+                                Please confirm your password.
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary">
+                                <i data-feather="user-plus" class="me-1"></i>
+                                Create Account
+                            </button>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="mb-0 small text-muted">
+                                Already have an account? 
+                                <a href="{{ url_for('login') }}" class="text-decoration-none">Sign in here</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Privacy Note -->
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    <i data-feather="shield" class="me-1" style="width: 12px; height: 12px;"></i>
+                    We respect your privacy - your data stays secure and private
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add form validation and password matching
+(function() {
+    'use strict';
+    
+    function validatePasswords() {
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirm_password');
+        
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity('Passwords do not match');
+        } else {
+            confirmPassword.setCustomValidity('');
+        }
+    }
+    
+    window.addEventListener('load', function() {
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirm_password');
+        
+        password.addEventListener('input', validatePasswords);
+        confirmPassword.addEventListener('input', validatePasswords);
+        
+        var forms = document.getElementsByTagName('form');
+        Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                validatePasswords();
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock %}

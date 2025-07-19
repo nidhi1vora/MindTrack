@@ -1,8 +1,11 @@
 from flask import render_template, request, redirect, url_for, flash, session, jsonify
+from flask_login import login_user, logout_user, login_required, current_user
 from app import app
-from data_manager import data_manager
+from data_manager import DataManager
+from models import user_manager
 from datetime import datetime, date
 import random
+import re
 
 # Motivational prompts
 DAILY_PROMPTS = [
@@ -47,9 +50,21 @@ MOTIVATIONAL_SAYINGS = [
     "Tomorrow is a new day with new possibilities."
 ]
 
+def get_user_data_manager():
+    """Get data manager for current user"""
+    if current_user.is_authenticated:
+        return DataManager(current_user.id)
+    return DataManager()
+
 @app.route('/')
 def index():
     """Main dashboard"""
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    
+    # Get user-specific data manager
+    data_manager = get_user_data_manager()
+    
     # Get today's prompt
     today_index = datetime.now().timetuple().tm_yday % len(DAILY_PROMPTS)
     daily_prompt = DAILY_PROMPTS[today_index]
@@ -87,9 +102,106 @@ def index():
                          recent_sleep=recent_sleep[:3],
                          notification_settings=notification_settings)
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Login page"""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '')
+        remember_me = request.form.get('remember_me') == 'on'
+        
+        # Basic validation
+        if not email or not password:
+            flash('Please enter both email and password.', 'error')
+            return render_template('auth/login.html')
+        
+        # Validate email format
+        if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', email):
+            flash('Please enter a valid email address.', 'error')
+            return render_template('auth/login.html')
+        
+        # Authenticate user
+        user = user_manager.authenticate_user(email, password)
+        if user:
+            login_user(user, remember=remember_me)
+            next_page = request.args.get('next')
+            flash(f'Welcome back, {user.name or user.email}!', 'success')
+            return redirect(next_page) if next_page else redirect(url_for('index'))
+        else:
+            flash('Invalid email or password.', 'error')
+    
+    return render_template('auth/login.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    """Signup page"""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '')
+        confirm_password = request.form.get('confirm_password', '')
+        
+        # Basic validation
+        if not email or not password:
+            flash('Please enter both email and password.', 'error')
+            return render_template('auth/signup.html')
+        
+        # Validate email format
+        if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', email):
+            flash('Please enter a valid email address.', 'error')
+            return render_template('auth/signup.html')
+        
+        # Password validation
+        if len(password) < 6:
+            flash('Password must be at least 6 characters long.', 'error')
+            return render_template('auth/signup.html')
+        
+        if password != confirm_password:
+            flash('Passwords do not match.', 'error')
+            return render_template('auth/signup.html')
+        
+        # Check if user already exists
+        existing_user = user_manager.get_user_by_email(email)
+        if existing_user:
+            flash('An account with this email already exists.', 'error')
+            return render_template('auth/signup.html')
+        
+        # Create new user
+        user = user_manager.create_user(email, password, name)
+        if user:
+            login_user(user)
+            flash(f'Welcome to MindTrack, {user.name or user.email}!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Error creating account. Please try again.', 'error')
+    
+    return render_template('auth/signup.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Logout user"""
+    logout_user()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('login'))
+
+@app.route('/forgot-password')
+def forgot_password():
+    """Forgot password page (placeholder for now)"""
+    flash('Password reset functionality will be available soon. Please contact support if needed.', 'info')
+    return redirect(url_for('login'))
+
 @app.route('/mood', methods=['GET', 'POST'])
+@login_required
 def mood_tracking():
     """Mood tracking page"""
+    data_manager = get_user_data_manager()
     if request.method == 'POST':
         mood_score = int(request.form.get('mood_score'))
         notes = request.form.get('notes', '')
@@ -105,8 +217,10 @@ def mood_tracking():
     return render_template('mood_tracking.html', mood_entries=mood_entries)
 
 @app.route('/sleep', methods=['GET', 'POST'])
+@login_required
 def sleep_tracking():
     """Sleep tracking page"""
+    data_manager = get_user_data_manager()
     if request.method == 'POST':
         duration = float(request.form.get('duration'))
         quality = int(request.form.get('quality'))
@@ -125,8 +239,10 @@ def sleep_tracking():
     return render_template('sleep_tracking.html', sleep_entries=sleep_entries)
 
 @app.route('/habits', methods=['GET', 'POST'])
+@login_required
 def habits():
     """Habits tracking page"""
+    data_manager = get_user_data_manager()
     if request.method == 'POST':
         action = request.form.get('action')
         
@@ -165,8 +281,10 @@ def habits():
                          completed_today=completed_today)
 
 @app.route('/journal', methods=['GET', 'POST'])
+@login_required
 def journal():
     """Secure journaling page"""
+    data_manager = get_user_data_manager()
     if request.method == 'POST':
         action = request.form.get('action')
         
@@ -218,8 +336,10 @@ def journal():
                          journal_entries=journal_entries)
 
 @app.route('/insights')
+@login_required
 def insights():
     """Insights and data visualization page"""
+    data_manager = get_user_data_manager()
     mood_entries = data_manager.get_mood_entries(30)
     sleep_entries = data_manager.get_sleep_entries(30)
     insights_list = data_manager.get_insights()
@@ -230,8 +350,10 @@ def insights():
                          insights=insights_list)
 
 @app.route('/api/mood_data')
+@login_required
 def api_mood_data():
     """API endpoint for mood chart data"""
+    data_manager = get_user_data_manager()
     entries = data_manager.get_mood_entries(30)
     entries.reverse()  # Chronological order for charts
     
@@ -241,8 +363,10 @@ def api_mood_data():
     })
 
 @app.route('/api/sleep_data')
+@login_required
 def api_sleep_data():
     """API endpoint for sleep chart data"""
+    data_manager = get_user_data_manager()
     entries = data_manager.get_sleep_entries(30)
     entries.reverse()  # Chronological order for charts
     
@@ -253,26 +377,117 @@ def api_sleep_data():
     })
 
 @app.route('/settings', methods=['GET', 'POST'])
+@login_required
 def settings():
-    """Settings page for notifications and preferences"""
+    """Enhanced settings page with user profile and preferences"""
+    data_manager = get_user_data_manager()
+    
     if request.method == 'POST':
         action = request.form.get('action')
         
-        if action == 'update_notifications':
-            enabled = request.form.get('notifications_enabled') == 'on'
+        if action == 'update_profile':
+            name = request.form.get('name', '').strip()
+            email = request.form.get('email', '').strip().lower()
+            current_password = request.form.get('current_password', '')
+            new_password = request.form.get('new_password', '')
+            confirm_password = request.form.get('confirm_password', '')
+            
+            # Basic validation
+            if not email:
+                flash('Email is required.', 'error')
+                return redirect(url_for('settings'))
+            
+            # Validate email format
+            if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', email):
+                flash('Please enter a valid email address.', 'error')
+                return redirect(url_for('settings'))
+            
+            # Check if email is already taken by another user
+            existing_user = user_manager.get_user_by_email(email)
+            if existing_user and existing_user.id != current_user.id:
+                flash('This email is already in use by another account.', 'error')
+                return redirect(url_for('settings'))
+            
+            # Handle password change
+            if new_password:
+                if not current_password:
+                    flash('Please enter your current password to change it.', 'error')
+                    return redirect(url_for('settings'))
+                
+                if not current_user.check_password(current_password):
+                    flash('Current password is incorrect.', 'error')
+                    return redirect(url_for('settings'))
+                
+                if len(new_password) < 6:
+                    flash('New password must be at least 6 characters long.', 'error')
+                    return redirect(url_for('settings'))
+                
+                if new_password != confirm_password:
+                    flash('New passwords do not match.', 'error')
+                    return redirect(url_for('settings'))
+                
+                current_user.set_password(new_password)
+            
+            # Update profile
+            if user_manager.update_user(current_user.id, name=name, email=email):
+                current_user.name = name
+                current_user.email = email
+                flash('Profile updated successfully!', 'success')
+            else:
+                flash('Error updating profile.', 'error')
+        
+        elif action == 'update_theme':
+            theme = request.form.get('theme', 'dark')
+            if user_manager.update_user(current_user.id, theme=theme):
+                current_user.theme = theme
+                flash('Theme updated successfully!', 'success')
+            else:
+                flash('Error updating theme.', 'error')
+        
+        elif action == 'update_notifications':
+            email_notifications = request.form.get('email_notifications') == 'on'
+            sms_notifications = request.form.get('sms_notifications') == 'on'
+            push_notifications = request.form.get('push_notifications') == 'on'
+            
+            # Update browser notification settings
+            enabled = request.form.get('browser_notifications_enabled') == 'on'
             frequency = request.form.get('notification_frequency', 'daily')
             
-            if data_manager.update_notification_settings(enabled=enabled, frequency=frequency):
+            # Update user notification preferences
+            user_success = user_manager.update_user(current_user.id, 
+                                                  email_notifications=email_notifications,
+                                                  sms_notifications=sms_notifications,
+                                                  push_notifications=push_notifications)
+            
+            # Update browser notification settings
+            browser_success = data_manager.update_notification_settings(enabled=enabled, frequency=frequency)
+            
+            if user_success and browser_success:
+                current_user.email_notifications = email_notifications
+                current_user.sms_notifications = sms_notifications
+                current_user.push_notifications = push_notifications
                 flash('Notification settings updated successfully!', 'success')
             else:
                 flash('Error updating notification settings.', 'error')
         
+        elif action == 'test_notification':
+            # Test browser notification functionality
+            if data_manager.update_notification_settings(last_notification=datetime.now().isoformat()):
+                flash('Test notification sent! Check if you received it.', 'info')
+            else:
+                flash('Error sending test notification.', 'error')
+        
         return redirect(url_for('settings'))
     
+    # Get current notification settings
     notification_settings = data_manager.get_notification_settings()
-    return render_template('settings.html', notification_settings=notification_settings)
+    
+    return render_template('enhanced_settings.html', 
+                         user=current_user,
+                         notification_settings=notification_settings)
 
 @app.route('/api/motivational_saying')
+@login_required
 def api_motivational_saying():
     """API endpoint to get a random motivational saying"""
     saying = random.choice(MOTIVATIONAL_SAYINGS)

@@ -2,7 +2,7 @@
 
 ## Overview
 
-MindTrack is a Flask-based web application for personal mental health tracking and wellness monitoring. The application provides tools for mood tracking, sleep monitoring, habit building, secure journaling, and insights generation. It's designed as a self-hosted solution with a focus on privacy and simplicity.
+MindTrack is a Flask-based web application for personal mental health tracking and wellness monitoring. The application provides tools for mood tracking, sleep monitoring, habit building, secure journaling, insights generation, and motivational notifications. It now features a complete authentication system with user registration, login, and personalized user profiles. The app is designed as a multi-user solution with individual data isolation and privacy-focused features.
 
 ## User Preferences
 
@@ -11,10 +11,12 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### Backend Architecture
-- **Framework**: Flask (Python web framework)
-- **Application Structure**: Single-file Flask app with modular route handling
-- **Data Layer**: JSON file-based storage system via custom DataManager class
-- **Security**: Session-based authentication with password hashing for journal protection
+- **Framework**: Flask (Python web framework) with Flask-Login for authentication
+- **Application Structure**: Modular Flask app with separated route handling and user management
+- **Data Layer**: User-specific JSON file storage system via custom DataManager class
+- **Authentication**: Flask-Login with secure password hashing using Werkzeug
+- **User Management**: Custom UserManager class with JSON-based user storage
+- **Security**: Session-based authentication, password hashing, and user data isolation
 - **Deployment**: WSGI-compatible with ProxyFix middleware for production deployment
 
 ### Frontend Architecture

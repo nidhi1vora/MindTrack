@@ -5,8 +5,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import logging
 
 class DataManager:
-    def __init__(self, data_file='data/user_data.json'):
-        self.data_file = data_file
+    def __init__(self, user_id=None):
+        self.user_id = user_id
+        if user_id:
+            self.data_file = f'data/user_{user_id}_data.json'
+        else:
+            self.data_file = 'data/user_data.json'  # Fallback for existing functionality
         self.ensure_data_directory()
         self.data = self.load_data()
     
