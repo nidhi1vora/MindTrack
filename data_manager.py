@@ -1,5 +1,6 @@
 import json
 import os
+import random
 from datetime import datetime, date, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import logging
@@ -317,11 +318,19 @@ class DataManager:
                 'mood': mood,
                 'type': plant_type,
                 'timestamp': datetime.now().isoformat(),
-                'isNew': True
+                'isNew': True,
+                'category': 'mood'
             }
             
             garden_data['plants'].append(new_plant)
             garden_data['last_plant_date'] = log_date
+            
+            # Check for milestone achievements and add milestone plants
+            stats = self.get_garden_stats()
+            milestone_plants = self._check_milestone_rewards(stats, garden_data)
+            
+            for milestone_plant in milestone_plants:
+                garden_data['plants'].append(milestone_plant)
             
             # Also add to mood entries for compatibility
             mood_score_map = {
@@ -338,6 +347,73 @@ class DataManager:
             
         except Exception as e:
             logging.error(f"Error adding garden plant: {e}")
+            return False
+    
+    def _check_milestone_rewards(self, stats, garden_data):
+        """Check if user has achieved milestones and return milestone plants"""
+        milestone_plants = []
+        existing_milestones = {plant['type'] for plant in garden_data['plants'] if plant.get('category') == 'milestone'}
+        
+        # Check streak milestones
+        if stats['current_streak'] == 5 and 'streak_5' not in existing_milestones:
+            milestone_plants.append({
+                'id': len(garden_data['plants']) + len(milestone_plants) + 1,
+                'date': date.today().isoformat(),
+                'mood': 'milestone',
+                'type': 'streak_5',
+                'timestamp': datetime.now().isoformat(),
+                'isNew': True,
+                'category': 'milestone'
+            })
+        
+        if stats['current_streak'] == 10 and 'streak_10' not in existing_milestones:
+            milestone_plants.append({
+                'id': len(garden_data['plants']) + len(milestone_plants) + 1,
+                'date': date.today().isoformat(),
+                'mood': 'milestone',
+                'type': 'streak_10',
+                'timestamp': datetime.now().isoformat(),
+                'isNew': True,
+                'category': 'milestone'
+            })
+        
+        if stats['current_streak'] == 30 and 'streak_30' not in existing_milestones:
+            milestone_plants.append({
+                'id': len(garden_data['plants']) + len(milestone_plants) + 1,
+                'date': date.today().isoformat(),
+                'mood': 'milestone',
+                'type': 'streak_30',
+                'timestamp': datetime.now().isoformat(),
+                'isNew': True,
+                'category': 'milestone'
+            })
+        
+        return milestone_plants
+    
+    def add_journal_reward_plant(self):
+        """Add a rare plant for journal reflection"""
+        try:
+            garden_data = self.get_garden_data()
+            
+            # Add rare reflection plant
+            rare_types = ['reflection_rare', 'reflection_lotus']
+            plant_type = random.choice(rare_types)
+            
+            new_plant = {
+                'id': len(garden_data['plants']) + 1,
+                'date': date.today().isoformat(),
+                'mood': 'reflection',
+                'type': plant_type,
+                'timestamp': datetime.now().isoformat(),
+                'isNew': True,
+                'category': 'journal'
+            }
+            
+            garden_data['plants'].append(new_plant)
+            return self.save_data()
+            
+        except Exception as e:
+            logging.error(f"Error adding journal reward plant: {e}")
             return False
 
 # Global data manager instance

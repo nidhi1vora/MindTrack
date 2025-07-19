@@ -43,5 +43,10 @@
     "notification_frequency": "daily",
     "notifications_enabled": false,
     "last_notification": null
+  },
+  "garden_data": {
+    "plants": [],
+    "creation_date": "2025-07-19T13:13:48.844149",
+    "last_plant_date": null
   }
 }

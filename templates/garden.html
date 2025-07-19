@@ -45,24 +45,29 @@
                 <div class="card-body">
                     {% if can_log_today %}
                         <div class="mood-options">
-                            <button class="mood-btn" data-mood="amazing" data-plant="flower">
+                            <button class="mood-btn" data-mood="amazing" data-plant="amazing">
                                 <span class="mood-emoji">😊</span>
+                                <span class="plant-preview">🌻</span>
                                 <span class="mood-label">Amazing</span>
                             </button>
-                            <button class="mood-btn" data-mood="good" data-plant="tree">
+                            <button class="mood-btn" data-mood="good" data-plant="good">
                                 <span class="mood-emoji">🙂</span>
+                                <span class="plant-preview">🌷</span>
                                 <span class="mood-label">Good</span>
                             </button>
-                            <button class="mood-btn" data-mood="okay" data-plant="cactus">
+                            <button class="mood-btn" data-mood="okay" data-plant="okay">
                                 <span class="mood-emoji">😐</span>
+                                <span class="plant-preview">🌱</span>
                                 <span class="mood-label">Okay</span>
                             </button>
-                            <button class="mood-btn" data-mood="down" data-plant="sprout">
+                            <button class="mood-btn" data-mood="down" data-plant="down">
                                 <span class="mood-emoji">😔</span>
+                                <span class="plant-preview">🥀</span>
                                 <span class="mood-label">Down</span>
                             </button>
-                            <button class="mood-btn" data-mood="anxious" data-plant="herb">
+                            <button class="mood-btn" data-mood="anxious" data-plant="anxious">
                                 <span class="mood-emoji">😰</span>
+                                <span class="plant-preview">🌿</span>
                                 <span class="mood-label">Anxious</span>
                             </button>
                         </div>
@@ -117,19 +122,75 @@
             </div>
         </div>
 
-        <!-- Journal Integration -->
+        <!-- Milestones Display -->
         <div class="col-12 mt-4">
-            <div class="card journal-integration">
-                <div class="card-body text-center">
-                    <h6 class="card-title">
-                        <i data-feather="edit-3" class="me-2"></i>
-                        Want to add a special plant?
+            <div class="card milestone-card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i data-feather="award" class="me-2"></i>
+                        Garden Milestones
                     </h6>
-                    <p class="card-text small text-muted">Write a journal reflection to grow a rare flowering plant in your garden</p>
-                    <a href="{{ url_for('journal') }}" class="btn btn-outline-primary">
-                        <i data-feather="book" class="me-2"></i>
-                        Write in Journal
-                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="milestone-item" id="milestone-5-days">
+                                <span class="milestone-icon">🌟</span>
+                                <span class="milestone-text">5 Day Streak</span>
+                                <span class="milestone-status"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="milestone-item" id="milestone-10-days">
+                                <span class="milestone-icon">🌈</span>
+                                <span class="milestone-text">10 Day Streak</span>
+                                <span class="milestone-status"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="milestone-item" id="milestone-30-days">
+                                <span class="milestone-icon">🏆</span>
+                                <span class="milestone-text">30 Day Streak</span>
+                                <span class="milestone-status"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhancement Integrations -->
+        <div class="col-12 mt-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card enhancement-card">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">
+                                <i data-feather="edit-3" class="me-2"></i>
+                                Reflection Rewards
+                            </h6>
+                            <p class="card-text small text-muted">Write deep journal reflections to grow rare flowering plants</p>
+                            <a href="{{ url_for('journal') }}" class="btn btn-outline-primary">
+                                <i data-feather="book" class="me-2"></i>
+                                Write Reflection
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card enhancement-card">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">
+                                <i data-feather="check-circle" class="me-2"></i>
+                                Habit Decorations
+                            </h6>
+                            <p class="card-text small text-muted">Complete habit streaks to add butterflies and stones to your garden</p>
+                            <a href="{{ url_for('habits') }}" class="btn btn-outline-success">
+                                <i data-feather="target" class="me-2"></i>
+                                Track Habits
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -167,15 +228,27 @@ let canLogToday = {{ can_log_today|tojson }};
 let isDarkTheme = false;
 let soundsEnabled = false;
 
-// Plant types and their visual representations
+// Enhanced plant types with mood-specific mapping
 const PLANT_TYPES = {
-    flower: { emoji: '🌸', rarity: 'common', message: 'A beautiful flower bloomed!' },
-    tree: { emoji: '🌳', rarity: 'common', message: 'A strong tree has grown!' },
-    cactus: { emoji: '🌵', rarity: 'common', message: 'A resilient cactus appeared!' },
-    sprout: { emoji: '🌱', rarity: 'common', message: 'A tiny sprout emerged!' },
-    herb: { emoji: '🌿', rarity: 'common', message: 'Fresh herbs are growing!' },
-    rare_flower: { emoji: '🌺', rarity: 'rare', message: 'A rare flower bloomed from your reflection!' },
-    bonsai: { emoji: '🪴', rarity: 'rare', message: 'A wise bonsai tree appeared!' }
+    // Mood-based plants
+    amazing: { emoji: '🌻', rarity: 'common', message: 'A bright sunflower bloomed! Your amazing mood shines!', category: 'mood' },
+    good: { emoji: '🌷', rarity: 'common', message: 'A lovely tulip grew from your good vibes!', category: 'mood' },
+    okay: { emoji: '🌱', rarity: 'common', message: 'A neutral sprout appeared - every mood matters!', category: 'mood' },
+    down: { emoji: '🥀', rarity: 'common', message: 'A wilted flower - it\'s okay to have tough days.', category: 'mood' },
+    anxious: { emoji: '🌿', rarity: 'common', message: 'Twisting vines grew - your feelings are valid.', category: 'mood' },
+    
+    // Reward plants
+    reflection_rare: { emoji: '🌺', rarity: 'rare', message: 'A rare hibiscus bloomed from your deep reflection!', category: 'journal' },
+    reflection_lotus: { emoji: '🪷', rarity: 'rare', message: 'A peaceful lotus emerged from your mindfulness!', category: 'journal' },
+    
+    // Milestone plants
+    streak_5: { emoji: '🌟', rarity: 'milestone', message: '5-day streak! A golden star plant appeared!', category: 'milestone' },
+    streak_10: { emoji: '🌈', rarity: 'milestone', message: '10-day streak! A rainbow flower bloomed!', category: 'milestone' },
+    streak_30: { emoji: '🏆', rarity: 'milestone', message: '30-day streak! A trophy plant - you\'re amazing!', category: 'milestone' },
+    
+    // Habit rewards
+    habit_butterfly: { emoji: '🦋', rarity: 'decoration', message: 'Your habit streak attracted a butterfly!', category: 'habit' },
+    habit_stone: { emoji: '🪨', rarity: 'decoration', message: 'A foundation stone - your habits are building strength!', category: 'habit' }
 };
 
 // Initialize garden on page load
@@ -206,29 +279,63 @@ function renderGarden() {
     
     container.innerHTML = '';
     
-    // Create a 10x8 grid for plants
-    const gridSize = 80;
+    // Create structured 10x8 grid placement
     const maxCols = 10;
+    const maxRows = 8;
+    let currentCol = 0;
+    let currentRow = 0;
     
-    gardenData.plants.forEach((plant, index) => {
+    // Sort plants by date to maintain chronological order
+    const sortedPlants = [...gardenData.plants].sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    sortedPlants.forEach((plant, index) => {
         const plantElement = document.createElement('div');
-        plantElement.className = 'plant-item';
-        plantElement.style.gridColumn = (index % maxCols) + 1;
-        plantElement.style.gridRow = Math.floor(index / maxCols) + 1;
+        plantElement.className = `plant-item plant-${plant.category || 'mood'}`;
         
-        const plantIcon = PLANT_TYPES[plant.type] || PLANT_TYPES.flower;
+        // Calculate grid position
+        plantElement.style.gridColumn = currentCol + 1;
+        plantElement.style.gridRow = currentRow + 1;
+        
+        const plantIcon = PLANT_TYPES[plant.type] || PLANT_TYPES.okay;
+        
+        // Enhanced tooltip with more information
+        const tooltipText = `${plant.mood} mood on ${plant.date}${plant.category === 'milestone' ? ' - Milestone Achievement!' : ''}`;
+        
         plantElement.innerHTML = `
-            <span class="plant-emoji" title="${plant.mood} on ${plant.date}">${plantIcon.emoji}</span>
+            <span class="plant-emoji ${plantIcon.rarity}" 
+                  title="${tooltipText}" 
+                  data-plant-id="${plant.id}"
+                  data-category="${plant.category || 'mood'}">${plantIcon.emoji}</span>
         `;
         
         // Add entrance animation for new plants
         if (plant.isNew) {
             plantElement.classList.add('plant-new');
-            setTimeout(() => plantElement.classList.remove('plant-new'), 1000);
+            setTimeout(() => {
+                plantElement.classList.remove('plant-new');
+                plant.isNew = false; // Remove flag after animation
+            }, 1000);
+        }
+        
+        // Add special styling for milestone and rare plants
+        if (plantIcon.rarity === 'milestone') {
+            plantElement.classList.add('milestone-plant');
+        } else if (plantIcon.rarity === 'rare') {
+            plantElement.classList.add('rare-plant');
         }
         
         container.appendChild(plantElement);
+        
+        // Move to next grid position
+        currentCol++;
+        if (currentCol >= maxCols) {
+            currentCol = 0;
+            currentRow++;
+        }
     });
+    
+    // Update milestone display
+    updateMilestoneDisplay();
 }
 
 function logMood(mood, plantType) {
@@ -253,17 +360,29 @@ function logMood(mood, plantType) {
             gardenData = data.garden_data;
             canLogToday = false;
             
-            // Show new plant modal
-            showNewPlantModal(plantType, mood);
+            // Check for milestone achievements
+            checkMilestoneAchievements(data.stats);
+            
+            // Show new plant modal with dynamic feedback
+            showNewPlantModal(plantType, mood, data.stats);
             
             // Re-render garden
             renderGarden();
             
-            // Update UI
+            // Update UI with enhanced feedback
+            const feedbackMessages = [
+                "✨ Your garden grew today!",
+                "🌱 Another day of growth!",
+                "🌟 Your wellness journey continues!",
+                "💚 Self-care recorded!"
+            ];
+            const randomMessage = feedbackMessages[Math.floor(Math.random() * feedbackMessages.length)];
+            
             document.querySelector('.mood-logger .card-body').innerHTML = `
                 <div class="text-center">
-                    <p class="text-success mb-3">✨ Your garden grew today!</p>
+                    <p class="text-success mb-3">${randomMessage}</p>
                     <p class="small text-muted">Come back tomorrow to grow your garden further</p>
+                    ${data.stats.current_streak > 1 ? `<div class="streak-badge">🔥 ${data.stats.current_streak} day streak!</div>` : ''}
                 </div>
             `;
             
@@ -271,22 +390,77 @@ function logMood(mood, plantType) {
             document.getElementById('total-plants').textContent = data.garden_data.plants.length;
             document.getElementById('current-streak').textContent = data.stats.current_streak;
             document.getElementById('best-streak').textContent = data.stats.best_streak;
+            
+            // Show toast notification
+            showToastNotification(PLANT_TYPES[plantType].message);
         }
     })
     .catch(error => {
         console.error('Error logging mood:', error);
-        alert('Failed to log mood. Please try again.');
+        showToastNotification('Failed to log mood. Please try again.', 'error');
     });
 }
 
-function showNewPlantModal(plantType, mood) {
+function showNewPlantModal(plantType, mood, stats) {
     const modal = new bootstrap.Modal(document.getElementById('plantModal'));
-    const plantInfo = PLANT_TYPES[plantType] || PLANT_TYPES.flower;
+    const plantInfo = PLANT_TYPES[plantType] || PLANT_TYPES.okay;
     
     document.getElementById('new-plant-icon').textContent = plantInfo.emoji;
-    document.getElementById('plant-message').textContent = plantInfo.message;
+    document.getElementById('plant-message').innerHTML = `
+        <p class="mb-2">${plantInfo.message}</p>
+        ${stats.current_streak > 1 ? `<p class="text-success small">🔥 ${stats.current_streak} day streak! Keep it up!</p>` : ''}
+        ${stats.total_plants % 10 === 0 ? `<p class="text-warning small">🎉 ${stats.total_plants} plants milestone reached!</p>` : ''}
+    `;
     
     modal.show();
+}
+
+function checkMilestoneAchievements(stats) {
+    const milestones = [
+        { days: 5, achieved: stats.current_streak >= 5 || stats.best_streak >= 5 },
+        { days: 10, achieved: stats.current_streak >= 10 || stats.best_streak >= 10 },
+        { days: 30, achieved: stats.current_streak >= 30 || stats.best_streak >= 30 }
+    ];
+    
+    milestones.forEach(milestone => {
+        const element = document.getElementById(`milestone-${milestone.days}-days`);
+        const statusSpan = element.querySelector('.milestone-status');
+        
+        if (milestone.achieved) {
+            element.classList.add('milestone-achieved');
+            statusSpan.textContent = '✅';
+            statusSpan.title = 'Achieved!';
+        } else {
+            statusSpan.textContent = `${stats.current_streak}/${milestone.days}`;
+            statusSpan.title = `${milestone.days - stats.current_streak} days to go`;
+        }
+    });
+}
+
+function updateMilestoneDisplay() {
+    // This function is called when the garden renders to update milestone status
+    // Implementation depends on having access to current stats
+    const currentStreak = parseInt(document.getElementById('current-streak').textContent) || 0;
+    const bestStreak = parseInt(document.getElementById('best-streak').textContent) || 0;
+    
+    checkMilestoneAchievements({ current_streak: currentStreak, best_streak: bestStreak });
+}
+
+function showToastNotification(message, type = 'success') {
+    // Create toast notification
+    const toast = document.createElement('div');
+    toast.className = `toast-notification toast-${type}`;
+    toast.textContent = message;
+    
+    // Add to page
+    document.body.appendChild(toast);
+    
+    // Show and auto-hide
+    setTimeout(() => toast.classList.add('show'), 100);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => document.body.removeChild(toast), 300);
+    }, 3000);
 }
 
 function updateCountdownTimer() {
