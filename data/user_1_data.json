@@ -6,6 +6,13 @@
       "mood_score": 8,
       "notes": "normal",
       "timestamp": "2025-07-19T05:43:41.877202"
+    },
+    {
+      "id": 2,
+      "date": "2025-07-19",
+      "mood_score": 4,
+      "notes": "",
+      "timestamp": "2025-07-19T12:56:34.308656"
     }
   ],
   "sleep_entries": [
