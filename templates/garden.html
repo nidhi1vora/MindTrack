@@ -102,21 +102,44 @@
                         </button>
                     </div>
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body">
                     <div class="garden-container" id="garden-container">
-                        <div class="garden-grid" id="garden-grid">
-                            <!-- Plants will be rendered here -->
+                        <div class="garden-grid-wrapper">
+                            <div class="garden-grid" id="garden-grid">
+                                <!-- Plants will be rendered here -->
+                            </div>
+                            
+                            {% if garden_stats.total_plants == 0 %}
+                            <div class="empty-garden">
+                                <div class="text-center py-4">
+                                    <i data-feather="circle" class="empty-garden-icon mb-3"></i>
+                                    <h6 class="text-muted">Your garden is waiting to bloom</h6>
+                                    <p class="text-muted small">Log your mood to plant your first seed!</p>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                         
-                        {% if garden_stats.total_plants == 0 %}
-                        <div class="empty-garden">
-                            <div class="text-center py-5">
-                                <i data-feather="circle" class="empty-garden-icon mb-3"></i>
-                                <h5 class="text-muted">Your garden is waiting to bloom</h5>
-                                <p class="text-muted">Log your mood to plant your first seed!</p>
+                        <div class="garden-info mt-3 pt-3 border-top">
+                            <div class="row text-center">
+                                <div class="col-3">
+                                    <small class="text-muted d-block fw-bold">Layout</small>
+                                    <small class="text-muted">10 × 8 Grid</small>
+                                </div>
+                                <div class="col-3">
+                                    <small class="text-muted d-block fw-bold">Order</small>
+                                    <small class="text-muted">Chronological</small>
+                                </div>
+                                <div class="col-3">
+                                    <small class="text-muted d-block fw-bold">Capacity</small>
+                                    <small class="text-muted">80 plants</small>
+                                </div>
+                                <div class="col-3">
+                                    <small class="text-muted d-block fw-bold">Progress</small>
+                                    <small class="text-muted">{{ garden_stats.total_plants }}/80</small>
+                                </div>
                             </div>
                         </div>
-                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -368,6 +391,14 @@ function logMood(mood, plantType) {
             
             // Re-render garden
             renderGarden();
+            
+            // Schedule redirect to dashboard after a brief delay for feedback
+            setTimeout(() => {
+                showToastNotification('Redirecting to dashboard to see your progress...', 'success');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1500);
+            }, 2000);
             
             // Update UI with enhanced feedback
             const feedbackMessages = [

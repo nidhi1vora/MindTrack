@@ -419,7 +419,7 @@ def mood_tracking():
         else:
             flash('Error saving mood entry.', 'error')
         
-        return redirect(url_for('mood_tracking'))
+        return redirect(url_for('index'))
     
     mood_entries = data_manager.get_mood_entries(30)
     return render_template('mood_tracking.html', mood_entries=mood_entries)
@@ -441,7 +441,7 @@ def sleep_tracking():
         else:
             flash('Error saving sleep entry.', 'error')
         
-        return redirect(url_for('sleep_tracking'))
+        return redirect(url_for('index'))
     
     sleep_entries = data_manager.get_sleep_entries(30)
     return render_template('sleep_tracking.html', sleep_entries=sleep_entries)
@@ -473,7 +473,7 @@ def habits():
             else:
                 flash('Error saving habit entry.', 'error')
         
-        return redirect(url_for('habits'))
+        return redirect(url_for('index'))
     
     all_habits = data_manager.get_habits()
     habit_entries = data_manager.get_habit_entries(30)

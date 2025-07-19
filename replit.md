@@ -107,3 +107,14 @@ Preferred communication style: Simple, everyday language.
 - Current JSON file storage suitable for single-user applications
 - Database migration path available if multi-user support needed
 - Modular architecture supports easy extension and feature addition
+
+## Recent Changes
+
+### July 19, 2025 - Garden Layout Enhancement & User Flow Improvement
+- **Grid-Based Garden Layout**: Implemented structured 10x8 grid with chronological plant placement
+- **Direct Mood-to-Plant Mapping**: Amazing→🌻, Good→🌷, Okay→🌱, Down→🥀, Anxious→🌿
+- **Multi-Dimensional Rewards**: Journal reflections add rare plants, milestone streaks unlock special plants
+- **Dynamic Feedback System**: Toast notifications, achievement badges, milestone progress tracking
+- **Enhanced Garden Visualization**: Improved text contrast, structured grid layout with progress indicators
+- **Automatic Dashboard Redirects**: After mood/sleep/habit logging, users redirect to dashboard for consistent flow
+- **User Experience Improvements**: Garden shows chronological mood history, milestone celebrations, visual feedback

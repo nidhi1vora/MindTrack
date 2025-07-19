@@ -421,18 +421,42 @@ footer {
 }
 
 .garden-container {
-    min-height: 400px;
-    background: linear-gradient(135deg, #f0f8f0, #e8f5e8);
     position: relative;
-    overflow: hidden;
+}
+
+.garden-grid-wrapper {
+    background: linear-gradient(135deg, #f0f8f0, #e8f5e8);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 2px solid #d4e6d4;
 }
 
 .garden-grid {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    gap: 8px;
-    padding: 2rem;
-    min-height: 400px;
+    grid-template-rows: repeat(8, 1fr);
+    gap: 6px;
+    min-height: 320px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.garden-info {
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+
+.garden-info .fw-bold {
+    color: #2d5a3d !important;
+    font-size: 0.75rem;
+}
+
+.garden-info .text-muted {
+    color: #4a6741 !important;
+    font-size: 0.7rem;
 }
 
 .plant-item {
