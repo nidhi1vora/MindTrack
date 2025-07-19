@@ -1,0 +1,299 @@
+/* MindTrack Custom Styles */
+
+:root {
+    --mindtrack-primary: #0d6efd;
+    --mindtrack-secondary: #6c757d;
+    --mindtrack-success: #198754;
+    --mindtrack-info: #17a2b8;
+    --mindtrack-warning: #ffc107;
+    --mindtrack-danger: #dc3545;
+    --mindtrack-light: #f8f9fa;
+    --mindtrack-dark: #212529;
+}
+
+/* Global Styles */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Navigation */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Cards */
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.gradient-card {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-info) 100%);
+    color: white;
+}
+
+/* Feature Icons */
+.feature-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+/* Daily Prompt */
+.daily-prompt-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+/* Activity List */
+.activity-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+/* Tips */
+.tip-card {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: rgba(var(--bs-info-rgb), 0.1);
+}
+
+/* Mood Scale */
+.mood-scale {
+    padding: 1rem 0;
+}
+
+.mood-item {
+    padding: 0.5rem 0;
+    align-items: center;
+}
+
+.mood-number {
+    font-weight: bold;
+    color: var(--bs-primary);
+    min-width: 3rem;
+    margin-right: 0.5rem;
+}
+
+.mood-emoji {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+}
+
+.mood-desc {
+    flex-grow: 1;
+    margin-left: 0.5rem;
+}
+
+.mood-display-score {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--bs-primary);
+    margin-right: 0.5rem;
+}
+
+.mood-display-emoji {
+    font-size: 2rem;
+}
+
+.mood-emoji-display {
+    font-size: 1.5rem;
+}
+
+/* Sleep Tips */
+.sleep-tips .tip-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+.sleep-tips .tip-item:last-child {
+    border-bottom: none;
+}
+
+/* Habit Cards */
+.habit-card {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.habit-card.completed {
+    border-color: var(--bs-success);
+    background: rgba(var(--bs-success-rgb), 0.1);
+}
+
+.habit-suggestions .suggestion-item {
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+}
+
+/* Journal Styles */
+.journal-entry {
+    border-left: 4px solid var(--bs-primary);
+    padding-left: 1rem;
+}
+
+.journal-content {
+    background: rgba(var(--bs-primary-rgb), 0.05);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.journal-prompts .prompt-item {
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.journal-prompts .prompt-item:last-child {
+    border-bottom: none;
+}
+
+/* Insights */
+.insight-card {
+    background: linear-gradient(135deg, rgba(var(--bs-primary-rgb), 0.1) 0%, rgba(var(--bs-info-rgb), 0.1) 100%);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border-left: 4px solid var(--bs-primary);
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+}
+
+.resource-card {
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background: rgba(var(--bs-secondary-rgb), 0.1);
+    height: 100%;
+}
+
+.stat-card {
+    padding: 1rem;
+}
+
+/* Quality Display */
+.quality-display {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--bs-info);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .daily-prompt-card {
+        padding: 1rem;
+    }
+    
+    .insight-card {
+        min-height: auto;
+        padding: 1rem;
+    }
+    
+    .feature-icon {
+        width: 2rem;
+        height: 2rem;
+    }
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Focus States */
+.form-control:focus,
+.form-select:focus,
+.btn:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Custom Button Styles */
+.btn {
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Alert Improvements */
+.alert {
+    border: none;
+    border-radius: 0.75rem;
+}
+
+/* Footer */
+footer {
+    background: rgba(var(--bs-dark-rgb), 0.05);
+    margin-top: auto;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bs-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bs-secondary);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--bs-primary);
+}

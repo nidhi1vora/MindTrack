@@ -1,0 +1,11 @@
+{
+  "mood_entries": [],
+  "sleep_entries": [],
+  "habits": [],
+  "habit_entries": [],
+  "journal_entries": [],
+  "journal_password_hash": null,
+  "settings": {
+    "created_date": "2025-07-19T00:00:00"
+  }
+}

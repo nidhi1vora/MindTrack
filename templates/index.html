@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - MindTrack{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Welcome Section -->
+    <div class="col-12 mb-4">
+        <div class="card gradient-card">
+            <div class="card-body text-center py-5">
+                <h1 class="card-title mb-3">
+                    <i data-feather="sunrise" class="me-2"></i>
+                    Welcome to Your Mental Health Journey
+                </h1>
+                <p class="card-text lead mb-4">Track your daily well-being and build healthy habits</p>
+                <div class="daily-prompt-card">
+                    <h5 class="text-info mb-3">
+                        <i data-feather="message-circle" class="me-2"></i>
+                        Daily Reflection Prompt
+                    </h5>
+                    <p class="h6 text-light">{{ daily_prompt }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i data-feather="activity" class="feature-icon text-success mb-2"></i>
+                <h5 class="card-title">Total Entries</h5>
+                <h3 class="text-success">{{ stats.total_entries }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i data-feather="smile" class="feature-icon text-primary mb-2"></i>
+                <h5 class="card-title">Avg Mood (7d)</h5>
+                <h3 class="text-primary">{{ stats.avg_mood_week or 'N/A' }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i data-feather="moon" class="feature-icon text-info mb-2"></i>
+                <h5 class="card-title">Avg Sleep (7d)</h5>
+                <h3 class="text-info">{{ stats.avg_sleep_week or 'N/A' }}h</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i data-feather="target" class="feature-icon text-warning mb-2"></i>
+                <h5 class="card-title">Habit Success</h5>
+                <h3 class="text-warning">{{ stats.habit_completion_week or 0 }}%</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="zap" class="me-2"></i>
+                    Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <a href="{{ url_for('mood_tracking') }}" class="btn btn-outline-primary w-100 h-100 d-flex align-items-center justify-content-center">
+                            <i data-feather="smile" class="me-2"></i>
+                            Log Mood
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{{ url_for('sleep_tracking') }}" class="btn btn-outline-info w-100 h-100 d-flex align-items-center justify-content-center">
+                            <i data-feather="moon" class="me-2"></i>
+                            Log Sleep
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{{ url_for('habits') }}" class="btn btn-outline-success w-100 h-100 d-flex align-items-center justify-content-center">
+                            <i data-feather="check-circle" class="me-2"></i>
+                            Track Habits
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{{ url_for('journal') }}" class="btn btn-outline-warning w-100 h-100 d-flex align-items-center justify-content-center">
+                            <i data-feather="book" class="me-2"></i>
+                            Write in Journal
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="clock" class="me-2"></i>
+                    Recent Activity
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_moods or recent_sleep %}
+                    <div class="activity-list">
+                        {% for mood in recent_moods %}
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i data-feather="smile" class="text-primary me-2"></i>
+                                        <span>Mood: {{ mood.mood_score }}/10</span>
+                                    </div>
+                                    <small class="text-muted">{{ mood.date }}</small>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        {% for sleep in recent_sleep %}
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i data-feather="moon" class="text-info me-2"></i>
+                                        <span>Sleep: {{ sleep.duration }}h</span>
+                                    </div>
+                                    <small class="text-muted">{{ sleep.date }}</small>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">No recent activity. Start tracking your well-being!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Mental Health Tips -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="lightbulb" class="me-2"></i>
+                    Daily Mental Health Tips
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="tip-card">
+                            <i data-feather="sun" class="text-warning mb-2"></i>
+                            <h6>Get Sunlight</h6>
+                            <p class="small text-muted">Spend 10-15 minutes in natural light to boost your mood and regulate sleep.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="tip-card">
+                            <i data-feather="wind" class="text-success mb-2"></i>
+                            <h6>Practice Deep Breathing</h6>
+                            <p class="small text-muted">Take 5 deep breaths when feeling stressed. Inhale for 4, hold for 4, exhale for 6.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="tip-card">
+                            <i data-feather="users" class="text-info mb-2"></i>
+                            <h6>Connect with Others</h6>
+                            <p class="small text-muted">Reach out to a friend or family member. Social connections are vital for mental health.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

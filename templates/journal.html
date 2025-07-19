@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Secure Journal - MindTrack{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Page Header -->
+    <div class="col-12 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>
+                    <i data-feather="book" class="me-2"></i>
+                    Secure Journal
+                </h2>
+                <p class="text-muted">Your private space for thoughts and reflections</p>
+            </div>
+            {% if is_authenticated %}
+                <form method="POST" class="d-inline">
+                    <input type="hidden" name="action" value="logout">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i data-feather="log-out" class="me-2"></i>
+                        Lock Journal
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if not has_password %}
+        <!-- Set Password -->
+        <div class="col-lg-6 mx-auto">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5 class="mb-0">
+                        <i data-feather="lock" class="me-2"></i>
+                        Set Journal Password
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted text-center mb-4">
+                        Create a password to secure your journal entries. This password will be required 
+                        to access your private thoughts and reflections.
+                    </p>
+                    
+                    <form method="POST">
+                        <input type="hidden" name="action" value="set_password">
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Choose a Password</label>
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   minlength="4" required placeholder="Enter a secure password">
+                            <div class="form-text">Password should be at least 4 characters long</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i data-feather="shield" class="me-2"></i>
+                            Secure My Journal
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    {% elif not is_authenticated %}
+        <!-- Authentication -->
+        <div class="col-lg-6 mx-auto">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5 class="mb-0">
+                        <i data-feather="unlock" class="me-2"></i>
+                        Enter Journal Password
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted text-center mb-4">
+                        Please enter your password to access your private journal entries.
+                    </p>
+                    
+                    <form method="POST">
+                        <input type="hidden" name="action" value="authenticate">
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   required placeholder="Enter your journal password">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i data-feather="unlock" class="me-2"></i>
+                            Access Journal
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <!-- Authenticated - Show Journal Interface -->
+        
+        <!-- New Entry Form -->
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i data-feather="edit-3" class="me-2"></i>
+                        Write New Entry
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <input type="hidden" name="action" value="add_entry">
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Entry Title</label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                   placeholder="What's on your mind today?" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Your Thoughts</label>
+                            <textarea class="form-control" id="content" name="content" rows="8" 
+                                      placeholder="Write your thoughts, feelings, reflections, or anything you want to remember..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i data-feather="save" class="me-2"></i>
+                            Save Entry
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journal Prompts -->
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i data-feather="message-circle" class="me-2"></i>
+                        Writing Prompts
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="journal-prompts">
+                        <div class="prompt-item mb-3">
+                            <i data-feather="heart" class="text-danger me-2"></i>
+                            <small>What am I grateful for today?</small>
+                        </div>
+                        <div class="prompt-item mb-3">
+                            <i data-feather="sun" class="text-warning me-2"></i>
+                            <small>What emotions did I experience today?</small>
+                        </div>
+                        <div class="prompt-item mb-3">
+                            <i data-feather="target" class="text-success me-2"></i>
+                            <small>What challenged me and how did I grow?</small>
+                        </div>
+                        <div class="prompt-item mb-3">
+                            <i data-feather="users" class="text-info me-2"></i>
+                            <small>How did I connect with others today?</small>
+                        </div>
+                        <div class="prompt-item mb-3">
+                            <i data-feather="award" class="text-primary me-2"></i>
+                            <small>What small victory can I celebrate?</small>
+                        </div>
+                        <div class="prompt-item">
+                            <i data-feather="compass" class="text-secondary me-2"></i>
+                            <small>What do I hope for tomorrow?</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Journal Entries -->
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i data-feather="archive" class="me-2"></i>
+                        Recent Journal Entries
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if journal_entries %}
+                        {% for entry in journal_entries %}
+                        <div class="journal-entry mb-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="mb-0">{{ entry.title }}</h6>
+                                <small class="text-muted">{{ entry.date }}</small>
+                            </div>
+                            <div class="journal-content">
+                                <p class="mb-0">{{ entry.content }}</p>
+                            </div>
+                            {% if not loop.last %}
+                                <hr class="my-4">
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i data-feather="book" class="text-muted mb-3" style="width: 48px; height: 48px;"></i>
+                            <h5 class="text-muted">No journal entries yet</h5>
+                            <p class="text-muted">Start writing to capture your thoughts and reflections!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

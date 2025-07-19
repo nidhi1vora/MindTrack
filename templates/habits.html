@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Habit Tracking - MindTrack{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Page Header -->
+    <div class="col-12 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>
+                    <i data-feather="check-circle" class="me-2"></i>
+                    Habit Tracking
+                </h2>
+                <p class="text-muted">Build positive habits for better mental health</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Habit -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="plus-circle" class="me-2"></i>
+                    Add New Habit
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="add_habit">
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Habit Name</label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                               placeholder="e.g., Morning meditation, Daily walk, Drink 8 glasses of water" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description (Optional)</label>
+                        <textarea class="form-control" id="description" name="description" rows="2" 
+                                  placeholder="Why is this habit important to you?"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">
+                        <i data-feather="plus" class="me-2"></i>
+                        Add Habit
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Habit Suggestions -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="lightbulb" class="me-2"></i>
+                    Habit Suggestions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="habit-suggestions">
+                    <div class="suggestion-item mb-2">
+                        <i data-feather="sunrise" class="text-warning me-2"></i>
+                        <small>Morning meditation (5-10 minutes)</small>
+                    </div>
+                    <div class="suggestion-item mb-2">
+                        <i data-feather="droplet" class="text-info me-2"></i>
+                        <small>Drink 8 glasses of water daily</small>
+                    </div>
+                    <div class="suggestion-item mb-2">
+                        <i data-feather="book" class="text-primary me-2"></i>
+                        <small>Read for 20 minutes</small>
+                    </div>
+                    <div class="suggestion-item mb-2">
+                        <i data-feather="activity" class="text-success me-2"></i>
+                        <small>30 minutes of physical activity</small>
+                    </div>
+                    <div class="suggestion-item mb-2">
+                        <i data-feather="phone-off" class="text-secondary me-2"></i>
+                        <small>Phone-free hour before bed</small>
+                    </div>
+                    <div class="suggestion-item">
+                        <i data-feather="heart" class="text-danger me-2"></i>
+                        <small>Practice gratitude (3 things)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Habits -->
+    {% if habits %}
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="calendar" class="me-2"></i>
+                    Today's Habits
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for habit in habits %}
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="card habit-card {{ 'completed' if completed_today.get(habit.id) else '' }}">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h6 class="card-title mb-0">{{ habit.name }}</h6>
+                                    {% if completed_today.get(habit.id) %}
+                                        <i data-feather="check-circle" class="text-success"></i>
+                                    {% else %}
+                                        <i data-feather="circle" class="text-muted"></i>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if habit.description %}
+                                    <p class="card-text small text-muted mb-3">{{ habit.description }}</p>
+                                {% endif %}
+
+                                <form method="POST" class="habit-form">
+                                    <input type="hidden" name="action" value="log_habit">
+                                    <input type="hidden" name="habit_id" value="{{ habit.id }}">
+                                    
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="completed" 
+                                               id="habit_{{ habit.id }}" {{ 'checked' if completed_today.get(habit.id) else '' }}>
+                                        <label class="form-check-label" for="habit_{{ habit.id }}">
+                                            Completed today
+                                        </label>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-outline-primary btn-sm w-100">
+                                        <i data-feather="save" class="me-1"></i>
+                                        Update
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent Habit Entries -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="list" class="me-2"></i>
+                    Recent Habit Entries
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if habit_entries %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Habit</th>
+                                    <th>Status</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in habit_entries %}
+                                <tr>
+                                    <td>{{ entry.date }}</td>
+                                    <td>
+                                        {% for habit in habits %}
+                                            {% if habit.id == entry.habit_id %}
+                                                {{ habit.name }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% if entry.completed %}
+                                            <span class="badge bg-success">
+                                                <i data-feather="check" class="me-1"></i>Completed
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">
+                                                <i data-feather="x" class="me-1"></i>Skipped
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if entry.notes %}
+                                            <span class="text-truncate d-inline-block" style="max-width: 200px;" title="{{ entry.notes }}">
+                                                {{ entry.notes }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">No notes</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i data-feather="check-circle" class="text-muted mb-3" style="width: 48px; height: 48px;"></i>
+                        <h5 class="text-muted">No habit entries yet</h5>
+                        <p class="text-muted">Add some habits and start tracking your progress!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

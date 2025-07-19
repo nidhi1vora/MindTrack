@@ -1,0 +1,107 @@
+# MindTrack - Mental Health Tracking Application
+
+## Overview
+
+MindTrack is a Flask-based web application for personal mental health tracking and wellness monitoring. The application provides tools for mood tracking, sleep monitoring, habit building, secure journaling, and insights generation. It's designed as a self-hosted solution with a focus on privacy and simplicity.
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+## System Architecture
+
+### Backend Architecture
+- **Framework**: Flask (Python web framework)
+- **Application Structure**: Single-file Flask app with modular route handling
+- **Data Layer**: JSON file-based storage system via custom DataManager class
+- **Security**: Session-based authentication with password hashing for journal protection
+- **Deployment**: WSGI-compatible with ProxyFix middleware for production deployment
+
+### Frontend Architecture
+- **Template Engine**: Jinja2 (Flask's default templating)
+- **CSS Framework**: Bootstrap 5 with Replit's dark theme
+- **JavaScript Libraries**: 
+  - Chart.js for data visualization
+  - Feather Icons for consistent iconography
+  - Bootstrap JavaScript for interactive components
+- **Design Pattern**: Responsive, mobile-first design with dark theme
+
+### Data Storage Solution
+- **Primary Storage**: JSON file system (`data/user_data.json`)
+- **Data Structure**: Single JSON file containing all user data with nested objects for different data types
+- **Backup Strategy**: File-based storage allows for easy backup and migration
+- **Schema**: Flexible JSON schema supporting mood entries, sleep data, habits, journal entries, and settings
+
+## Key Components
+
+### Data Management (`data_manager.py`)
+- Custom DataManager class handling all data persistence
+- JSON file-based storage with automatic directory creation
+- Data integrity checks and default structure initialization
+- Support for mood entries, sleep tracking, habit monitoring, and secure journal entries
+
+### Route Handling (`routes.py`)
+- Modular route definitions separated from main application
+- Dashboard with quick stats and daily reflection prompts
+- Individual modules for mood, sleep, habits, journal, and insights
+- RESTful patterns for form handling and data submission
+
+### Security Features
+- Session management with configurable secret keys
+- Password hashing for journal entries using Werkzeug's security utilities
+- Environment variable support for sensitive configuration
+
+### User Interface Components
+- Base template with consistent navigation and Bootstrap integration
+- Specialized templates for each tracking module
+- Interactive forms with real-time feedback
+- Chart.js integration for data visualization
+- Responsive design optimized for both desktop and mobile
+
+## Data Flow
+
+1. **User Input**: Forms collect user data through web interface
+2. **Route Processing**: Flask routes validate and process form submissions
+3. **Data Persistence**: DataManager saves data to JSON file storage
+4. **Data Retrieval**: Dashboard and analytics pages fetch data through DataManager
+5. **Visualization**: Chart.js renders data visualizations on insights pages
+6. **Session Management**: Flask sessions maintain user state and journal authentication
+
+## External Dependencies
+
+### Python Packages
+- **Flask**: Web framework and templating
+- **Werkzeug**: Security utilities and WSGI support
+
+### Frontend Libraries (CDN)
+- **Bootstrap 5**: UI framework with Replit dark theme
+- **Chart.js**: Data visualization library
+- **Feather Icons**: Icon library for consistent UI elements
+
+### Development Dependencies
+- **Logging**: Built-in Python logging for debugging
+- **JSON**: Built-in Python JSON handling for data persistence
+- **OS/Datetime**: Built-in Python modules for file system and date operations
+
+## Deployment Strategy
+
+### Local Development
+- Flask development server with debug mode enabled
+- Hot reloading for development efficiency
+- Debug logging for troubleshooting
+
+### Production Considerations
+- WSGI-compatible with ProxyFix middleware for reverse proxy deployment
+- Environment variable configuration for sensitive settings
+- File-based storage suitable for single-user deployments
+- Session secret key configuration through environment variables
+
+### Hosting Requirements
+- Python 3.x runtime environment
+- File system write permissions for data storage
+- Standard Flask hosting capabilities (supports most Python hosting platforms)
+
+### Scalability Notes
+- Current JSON file storage suitable for single-user applications
+- Database migration path available if multi-user support needed
+- Modular architecture supports easy extension and feature addition

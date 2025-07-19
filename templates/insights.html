@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+
+{% block title %}Insights & Analytics - MindTrack{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Page Header -->
+    <div class="col-12 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>
+                    <i data-feather="trending-up" class="me-2"></i>
+                    Insights & Analytics
+                </h2>
+                <p class="text-muted">Visualize your mental health journey and discover patterns</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Personalized Insights -->
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="lightbulb" class="me-2"></i>
+                    Personalized Insights
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if insights %}
+                    <div class="row">
+                        {% for insight in insights %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="insight-card">
+                                <p class="mb-0">{{ insight }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i data-feather="info" class="text-muted mb-3" style="width: 48px; height: 48px;"></i>
+                        <h5 class="text-muted">No insights available yet</h5>
+                        <p class="text-muted">Start tracking your mood, sleep, and habits to generate personalized insights!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Mood Trends Chart -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="smile" class="me-2"></i>
+                    Mood Trends (Last 30 Days)
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="moodChart" height="200"></canvas>
+                {% if not mood_entries %}
+                    <div class="text-center py-5">
+                        <i data-feather="smile" class="text-muted mb-3" style="width: 32px; height: 32px;"></i>
+                        <p class="text-muted">No mood data to display</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Sleep Analysis Chart -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="moon" class="me-2"></i>
+                    Sleep Analysis (Last 30 Days)
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="sleepChart" height="200"></canvas>
+                {% if not sleep_entries %}
+                    <div class="text-center py-5">
+                        <i data-feather="moon" class="text-muted mb-3" style="width: 32px; height: 32px;"></i>
+                        <p class="text-muted">No sleep data to display</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Mental Health Tips -->
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="heart" class="me-2"></i>
+                    Mental Health Resources
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="resource-card">
+                            <i data-feather="phone" class="text-danger mb-2"></i>
+                            <h6>Crisis Support</h6>
+                            <p class="small text-muted">National Suicide Prevention Lifeline: 988</p>
+                            <p class="small text-muted">Crisis Text Line: Text HOME to 741741</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="resource-card">
+                            <i data-feather="wind" class="text-info mb-2"></i>
+                            <h6>Mindfulness</h6>
+                            <p class="small text-muted">Practice 4-7-8 breathing: Inhale for 4, hold for 7, exhale for 8</p>
+                            <p class="small text-muted">Try 5-minute guided meditation daily</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="resource-card">
+                            <i data-feather="users" class="text-success mb-2"></i>
+                            <h6>Connection</h6>
+                            <p class="small text-muted">Reach out to one friend or family member today</p>
+                            <p class="small text-muted">Consider joining support groups or communities</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Summary -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="bar-chart-2" class="me-2"></i>
+                    Data Summary
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card">
+                            <i data-feather="smile" class="text-primary mb-2"></i>
+                            <h4>{{ mood_entries|length }}</h4>
+                            <p class="text-muted">Mood Entries</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card">
+                            <i data-feather="moon" class="text-info mb-2"></i>
+                            <h4>{{ sleep_entries|length }}</h4>
+                            <p class="text-muted">Sleep Entries</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card">
+                            <i data-feather="trending-up" class="text-success mb-2"></i>
+                            <h4>
+                                {% if mood_entries %}
+                                    {{ "%.1f"|format(mood_entries|map(attribute='mood_score')|sum / mood_entries|length) }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </h4>
+                            <p class="text-muted">Avg Mood</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card">
+                            <i data-feather="clock" class="text-warning mb-2"></i>
+                            <h4>
+                                {% if sleep_entries %}
+                                    {{ "%.1f"|format(sleep_entries|map(attribute='duration')|sum / sleep_entries|length) }}h
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </h4>
+                            <p class="text-muted">Avg Sleep</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Chart configurations
+Chart.defaults.color = '#adb5bd';
+Chart.defaults.borderColor = '#495057';
+
+// Mood Chart
+{% if mood_entries %}
+fetch('/api/mood_data')
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('moodChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.dates,
+                datasets: [{
+                    label: 'Mood Score',
+                    data: data.scores,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        grid: {
+                            color: '#495057'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: '#495057'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    });
+{% endif %}
+
+// Sleep Chart
+{% if sleep_entries %}
+fetch('/api/sleep_data')
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('sleepChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.dates,
+                datasets: [{
+                    label: 'Sleep Duration (hours)',
+                    data: data.duration,
+                    backgroundColor: '#17a2b8',
+                    borderColor: '#17a2b8',
+                    borderWidth: 1
+                }, {
+                    label: 'Sleep Quality',
+                    data: data.quality,
+                    backgroundColor: '#6c757d',
+                    borderColor: '#6c757d',
+                    borderWidth: 1,
+                    type: 'line',
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 12,
+                        title: {
+                            display: true,
+                            text: 'Hours'
+                        },
+                        grid: {
+                            color: '#495057'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        max: 10,
+                        title: {
+                            display: true,
+                            text: 'Quality (1-10)'
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    },
+                    x: {
+                        grid: {
+                            color: '#495057'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    });
+{% endif %}
+</script>
+{% endblock %}

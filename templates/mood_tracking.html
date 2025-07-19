@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Mood Tracking - MindTrack{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Page Header -->
+    <div class="col-12 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>
+                    <i data-feather="smile" class="me-2"></i>
+                    Mood Tracking
+                </h2>
+                <p class="text-muted">Track your daily mood on a scale of 1-10</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mood Entry Form -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="plus-circle" class="me-2"></i>
+                    Log Today's Mood
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-4">
+                        <label for="mood_score" class="form-label">Mood Score (1-10)</label>
+                        <input type="range" class="form-range" min="1" max="10" value="5" id="mood_score" name="mood_score" oninput="updateMoodDisplay(this.value)">
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span>1 - Very Low</span>
+                            <span>5 - Neutral</span>
+                            <span>10 - Excellent</span>
+                        </div>
+                        <div class="text-center mt-3">
+                            <span class="mood-display-score">5</span>
+                            <span class="mood-display-emoji">😐</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes (Optional)</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="How are you feeling? What contributed to your mood today?"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i data-feather="save" class="me-2"></i>
+                        Save Mood Entry
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mood Scale Reference -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="info" class="me-2"></i>
+                    Mood Scale Reference
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mood-scale">
+                    <div class="mood-item d-flex align-items-center mb-2">
+                        <span class="mood-number">9-10</span>
+                        <span class="mood-emoji">😄</span>
+                        <span class="mood-desc">Excellent - Feeling great, energetic, very positive</span>
+                    </div>
+                    <div class="mood-item d-flex align-items-center mb-2">
+                        <span class="mood-number">7-8</span>
+                        <span class="mood-emoji">😊</span>
+                        <span class="mood-desc">Good - Positive, content, things going well</span>
+                    </div>
+                    <div class="mood-item d-flex align-items-center mb-2">
+                        <span class="mood-number">5-6</span>
+                        <span class="mood-emoji">😐</span>
+                        <span class="mood-desc">Neutral - Okay, neither good nor bad</span>
+                    </div>
+                    <div class="mood-item d-flex align-items-center mb-2">
+                        <span class="mood-number">3-4</span>
+                        <span class="mood-emoji">😕</span>
+                        <span class="mood-desc">Low - Somewhat down, struggling a bit</span>
+                    </div>
+                    <div class="mood-item d-flex align-items-center mb-2">
+                        <span class="mood-number">1-2</span>
+                        <span class="mood-emoji">😞</span>
+                        <span class="mood-desc">Very Low - Feeling very down or distressed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Mood Entries -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="list" class="me-2"></i>
+                    Recent Mood Entries
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if mood_entries %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Mood Score</th>
+                                    <th>Visual</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in mood_entries %}
+                                <tr>
+                                    <td>{{ entry.date }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if entry.mood_score >= 7 else 'warning' if entry.mood_score >= 5 else 'danger' }}">
+                                            {{ entry.mood_score }}/10
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="mood-emoji-display">
+                                            {% if entry.mood_score >= 9 %}😄
+                                            {% elif entry.mood_score >= 7 %}😊
+                                            {% elif entry.mood_score >= 5 %}😐
+                                            {% elif entry.mood_score >= 3 %}😕
+                                            {% else %}😞
+                                            {% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if entry.notes %}
+                                            <span class="text-truncate d-inline-block" style="max-width: 200px;" title="{{ entry.notes }}">
+                                                {{ entry.notes }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">No notes</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i data-feather="smile" class="text-muted mb-3" style="width: 48px; height: 48px;"></i>
+                        <h5 class="text-muted">No mood entries yet</h5>
+                        <p class="text-muted">Start tracking your mood to see patterns and insights!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateMoodDisplay(value) {
+    const scoreDisplay = document.querySelector('.mood-display-score');
+    const emojiDisplay = document.querySelector('.mood-display-emoji');
+    
+    scoreDisplay.textContent = value;
+    
+    if (value >= 9) {
+        emojiDisplay.textContent = '😄';
+    } else if (value >= 7) {
+        emojiDisplay.textContent = '😊';
+    } else if (value >= 5) {
+        emojiDisplay.textContent = '😐';
+    } else if (value >= 3) {
+        emojiDisplay.textContent = '😕';
+    } else {
+        emojiDisplay.textContent = '😞';
+    }
+}
+</script>
+{% endblock %}
