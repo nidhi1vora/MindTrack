@@ -338,15 +338,30 @@ footer {
 .garden-header {
     background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
     border: none;
+    color: #1a472a;
+}
+
+.garden-header h1, .garden-header p, .garden-header .card-title, .garden-header .card-text {
+    color: #1a472a !important;
+}
+
+.garden-background {
+    color: #2d5a3d;
+}
+
+.garden-background .text-muted {
+    color: #4a6741 !important;
 }
 
 .garden-stats .stat-item {
     display: flex;
     align-items: center;
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 20px;
     margin: 0 0.25rem;
+    color: #2d5a3d;
+    font-weight: 500;
 }
 
 .mood-logger .mood-options {
@@ -541,6 +556,11 @@ footer {
 .milestone-card {
     background: linear-gradient(135deg, #fff8e1, #f3e5f5);
     border: none;
+    color: #2d5a3d;
+}
+
+.milestone-card .card-header h6 {
+    color: #1a472a !important;
 }
 
 .milestone-item {
@@ -566,6 +586,7 @@ footer {
 .milestone-text {
     flex-grow: 1;
     font-weight: 500;
+    color: #2d5a3d;
 }
 
 .milestone-status {
@@ -578,6 +599,15 @@ footer {
     background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
     border: none;
     transition: transform 0.3s ease;
+    color: #2d5a3d;
+}
+
+.enhancement-card .card-title {
+    color: #1a472a !important;
+}
+
+.enhancement-card .text-muted {
+    color: #4a6741 !important;
 }
 
 .enhancement-card:hover {

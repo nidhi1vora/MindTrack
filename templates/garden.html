@@ -512,6 +512,36 @@ function toggleSounds() {
     feather.replace();
 }
 
+// Initialize garden on page load
+document.addEventListener('DOMContentLoaded', function() {
+    renderGarden();
+    updateCountdownTimer();
+    
+    // Set up mood button listeners
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const mood = this.dataset.mood;
+            const plantType = this.dataset.plant;
+            logMood(mood, plantType);
+        });
+    });
+    
+    // Theme toggle - check if element exists
+    const themeToggle = document.getElementById('toggle-theme');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleGardenTheme);
+    }
+    
+    // Sound toggle - check if element exists
+    const soundToggle = document.getElementById('play-sounds');
+    if (soundToggle) {
+        soundToggle.addEventListener('click', toggleSounds);
+    }
+    
+    // Update timer every minute
+    setInterval(updateCountdownTimer, 60000);
+});
+
 // Initialize Feather icons
 feather.replace();
 </script>
